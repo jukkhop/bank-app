@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "args": [
+        "--no-ui",
+        "--function-handler",
+        "BankApp::Bank.GetAccountOwners::handler"
+      ],
+      "console": "internalConsole",
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "name": ".NET Core Launch (console)",
+      "preLaunchTask": "build",
+      "program": "/Users/jukka/.dotnet/tools/dotnet-lambda-test-tool-3.1",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "coreclr"
+    }
+  ],
+  "version": "0.2.0"
+}

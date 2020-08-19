@@ -1,0 +1,12 @@
+services:
+  db:
+    container_name: bank-postgres
+    image: postgres:11.8-alpine
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_DB: 'bank_db'
+      POSTGRES_USER: 'bank_user'
+      POSTGRES_PASSWORD: 'bank_password'
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d/

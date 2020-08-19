@@ -1,0 +1,27 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>BankApp</AssemblyName>
+    <PackageId>bank-app</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src/Common/Types.fs" />
+    <Compile Include="src/Common/Conversions.fs" />
+    <Compile Include="src/Common/Headers.fs" />
+    <Compile Include="src/Databases/Database.fs" />
+    <Compile Include="src/Databases/AccountOwnerDb.fs" />
+    <Compile Include="src/Lambdas/GetAccountOwners.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
+    <PackageReference Include="FSharp.Json" Version="0.4.0" />
+    <PackageReference Include="Npgsql.FSharp" Version="3.6.0" />
+  </ItemGroup>
+
+</Project>

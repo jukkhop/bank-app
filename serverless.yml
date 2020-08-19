@@ -1,0 +1,14 @@
+service: bank-app
+
+provider:
+  name: aws
+  runtime: dotnetcore3.1
+  stage: dev
+  region: eu-west-1
+
+package:
+  artifact: bin/Release/netcoreapp3.1/deploy-package.zip
+
+functions:
+  get-account-owners:
+    handler: BankApp::Bank.GetAccountOwners::handler

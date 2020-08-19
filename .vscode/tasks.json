@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "args": [
+        "build",
+        "${workspaceFolder}/bank-app.fsproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "command": "dotnet",
+      "group": "build",
+      "label": "build",
+      "presentation": { "reveal": "silent" },
+      "problemMatcher": "$msCompile",
+      "type": "shell"
+    }
+  ],
+  "version": "2.0.0"
+}
