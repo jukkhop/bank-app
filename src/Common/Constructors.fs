@@ -2,7 +2,7 @@ namespace Bank
 
 open System
 
-module Conversions =
+module Constructors =
 
   let mkNationality (nationality: string) =
     match nationality with

@@ -1,7 +1,7 @@
 namespace Bank
 
 open Bank
-open Bank.Conversions
+open Bank.Constructors
 open Bank.Database
 open Npgsql.FSharp
 
