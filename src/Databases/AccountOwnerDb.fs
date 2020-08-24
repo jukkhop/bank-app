@@ -1,16 +1,25 @@
 namespace Bank
 
-open Bank
 open Bank.Constructors
 open Bank.Database
 open Npgsql.FSharp
 
 module AccountOwnerDb =
 
-  let getAll: AccountOwner list =
+  let convert (read: RowReader) = {
+    OwnerId = read.int64 "owner_id" |> OwnerId
+    FirstName = read.text "first_name" |> mkString50OrFail |> FirstName
+    MiddleName = read.textOrNone "middle_name" |> Option.map (mkString50OrFail >> MiddleName)
+    LastName = read.text "last_name" |> mkString50OrFail |> LastName
+    Nationality = read.text "nationality" |> mkNationalityOrFail
+    DateOfBirth = read.date "date_of_birth" |> mkDateTime
+  }
 
+  let getAll =
+  
     let sql = @"
       select
+        owner_id,
         first_name,
         middle_name,
         last_name,
@@ -18,14 +27,4 @@ module AccountOwnerDb =
         date_of_birth
       from account_owner"
 
-    let readFn (read: RowReader): AccountOwner = {
-      FirstName = read.text "first_name" |> mkString50OrFail
-      MiddleName = read.textOrNone "middle_name" |> Option.map mkString50OrFail
-      LastName = read.text "last_name" |> mkString50OrFail
-      Nationality = read.text "nationality" |> mkNationalityOrFail
-      DateOfBirth = read.date "date_of_birth" |> mkDateTime
-    }
-
-    match query sql readFn with
-     | Ok rows -> rows
-     | Error err -> raise err
+    query sql convert

@@ -3,8 +3,8 @@ service: bank-app
 provider:
   name: aws
   runtime: dotnetcore3.1
-  stage: dev
   region: eu-west-1
+  stage: dev
 
 package:
   artifact: bin/Release/netcoreapp3.1/deploy-package.zip
@@ -12,3 +12,16 @@ package:
 functions:
   get-account-owners:
     handler: BankApp::Bank.GetAccountOwners::handler
+    events:
+      - http:
+          path: /get-account-owners
+          method: get
+          cors: true
+
+  get-bank-accounts:
+    handler: BankApp::Bank.GetBankAccounts::handler
+    events:
+      - http:
+          path: /get-bank-accounts
+          method: get
+          cors: true

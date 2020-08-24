@@ -8,12 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="src/Common/Types.fs" />
+    <Compile Include="src/Types/Domain.fs" />
+    <Compile Include="src/Types/Response.fs" />
+    <Compile Include="src/Common/Utils.fs" />
     <Compile Include="src/Common/Constructors.fs" />
     <Compile Include="src/Common/Headers.fs" />
+    <Compile Include="src/Common/Json.fs" />
     <Compile Include="src/Databases/Database.fs" />
     <Compile Include="src/Databases/AccountOwnerDb.fs" />
-    <Compile Include="src/Lambdas/GetAccountOwners.fs" />
+    <Compile Include="src/Databases/BankAccountDb.fs" />
+    <Compile Include="src/Functions/GetAccountOwners.fs" />
+    <Compile Include="src/Functions/GetBankAccounts.fs" />
   </ItemGroup>
 
   <ItemGroup>
