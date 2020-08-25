@@ -10,10 +10,11 @@
   <ItemGroup>
     <Compile Include="src/Types/Domain.fs" />
     <Compile Include="src/Types/Response.fs" />
-    <Compile Include="src/Common/Utils.fs" />
-    <Compile Include="src/Common/Constructors.fs" />
-    <Compile Include="src/Common/Headers.fs" />
     <Compile Include="src/Common/Json.fs" />
+    <Compile Include="src/Common/Utils.fs" />
+    <Compile Include="src/Common/HttpUtils.fs" />
+    <Compile Include="src/Common/AccountNumberUtils.fs" />
+    <Compile Include="src/Common/Constructors.fs" />
     <Compile Include="src/Databases/Database.fs" />
     <Compile Include="src/Databases/AccountOwnerDb.fs" />
     <Compile Include="src/Databases/BankAccountDb.fs" />

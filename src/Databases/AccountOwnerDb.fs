@@ -6,7 +6,7 @@ open Npgsql.FSharp
 
 module AccountOwnerDb =
 
-  let convert (read: RowReader) = {
+  let convert (read: RowReader) : AccountOwner = {
     OwnerId = read.int64 "owner_id" |> OwnerId
     FirstName = read.text "first_name" |> mkString50OrFail |> FirstName
     MiddleName = read.textOrNone "middle_name" |> Option.map (mkString50OrFail >> MiddleName)
@@ -15,7 +15,7 @@ module AccountOwnerDb =
     DateOfBirth = read.date "date_of_birth" |> mkDateTime
   }
 
-  let getAll =
+  let getAll: Result<AccountOwner list, exn> =
   
     let sql = @"
       select
