@@ -9,7 +9,7 @@ module AccountNumberUtils =
     let removeWhiteSpace = String.filter (Char.IsWhiteSpace >> not)
 
     let checkLength (str: string) =
-      if (str.Length = 18) then Some str else None
+      if str.Length = 18 then Some str else None
 
     let moveFourCharsToEnd =
       Seq.toList >> List.splitAt 4 >> toList >> List.rev >> List.concat

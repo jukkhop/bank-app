@@ -8,5 +8,5 @@ module GetBankAccounts =
 
   let handler(_: APIGatewayProxyRequest, _: ILambdaContext): APIGatewayProxyResponse =
     match BankAccountDb.getAll with
-    | Ok accounts -> mkResponse 200 accounts
-    | Error ex -> mkErrorResponse 500 ex.Message
+    | Ok accounts -> mkSuccessResponse accounts
+    | Error ex -> mkGenericErrorResponse 500 ex.Message

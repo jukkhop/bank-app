@@ -14,3 +14,8 @@ module Utils =
     match value with
     | Some x -> x
     | None -> def
+
+  let nullableToOption value =
+    match value with
+    | null -> None
+    | value -> Some value

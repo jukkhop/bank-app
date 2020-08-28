@@ -13,7 +13,8 @@ type LastName = LastName of String50
 type MiddleName = MiddleName of String50
 type OwnerId = OwnerId of int64
 type TransferAmount = TransferAmount of int64
-type TransferId = TransferId of String50
+type TransferId = TransferId of int64
+type TransferCreatedAt = TransferCreatedAt of DateTime
 
 type Nationality =
   | [<JsonUnionCase(Case="Austria")>] Austria
@@ -22,10 +23,10 @@ type Nationality =
   | [<JsonUnionCase(Case="Sweden")>] Sweden
 
 type TransferResult =
-  | Success of decimal
-  | InsufficientFunds of decimal
+  | Success
+  | InsufficientFunds
   | NetworkError
-  | OtherError of string
+  | OtherError
 
 type AccountOwner = {
   OwnerId: OwnerId
@@ -45,9 +46,9 @@ type BankAccount = {
 
 type BankTransfer = {
   TransferId: TransferId
-  Created: DateTime
-  FromAccount: AccountNumber
-  ToAccount: AccountNumber
+  Created: TransferCreatedAt
+  FromAccountId: AccountId
+  ToAccountId: AccountId
   AmountEurCents: TransferAmount
   Result: TransferResult
 }

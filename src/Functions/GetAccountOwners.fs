@@ -12,5 +12,5 @@ module GetAccountOwners =
 
   let handler(_: APIGatewayProxyRequest, _: ILambdaContext): APIGatewayProxyResponse =
     match AccountOwnerDb.getAll with
-    | Ok owners -> mkResponse 200 owners
-    | Error ex -> mkErrorResponse 500 ex.Message
+    | Ok owners -> mkSuccessResponse owners
+    | Error ex -> mkGenericErrorResponse 500 ex.Message

@@ -7,8 +7,8 @@ module Json =
   let private config =
     JsonConfig.create(jsonFieldNaming = Json.lowerCamelCase)
 
-  let serialize obj =
+  let serialize (obj: obj) : string =
     Json.serializeEx config obj
     
-  let deserialize json =
-    Json.deserializeEx config json
+  let deserialize<'a> (json: string) : 'a =
+    Json.deserializeEx<'a> config json

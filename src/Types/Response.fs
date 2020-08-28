@@ -4,6 +4,15 @@ type OkBody<'A> = {
   Results: 'A list
 }
 
-type ErrorBody = {
+type GenericErrorBody = {
   Message: string
+}
+
+type ValidationError = {
+  Field: string
+  Message: string
+}
+
+type ValidationErrorBody = {
+  ValidationErrors: ValidationError list
 }

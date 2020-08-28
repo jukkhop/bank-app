@@ -10,14 +10,21 @@
   <ItemGroup>
     <Compile Include="src/Types/Domain.fs" />
     <Compile Include="src/Types/Response.fs" />
+    <Compile Include="src/Types/Dto.fs" />
+    <Compile Include="src/Types/Validation.fs" />
     <Compile Include="src/Common/Json.fs" />
     <Compile Include="src/Common/Utils.fs" />
     <Compile Include="src/Common/HttpUtils.fs" />
     <Compile Include="src/Common/AccountNumberUtils.fs" />
     <Compile Include="src/Common/Constructors.fs" />
+    <Compile Include="src/Common/Converters.fs" />
+    <Compile Include="src/Common/Validators.fs" />
     <Compile Include="src/Databases/Database.fs" />
     <Compile Include="src/Databases/AccountOwnerDb.fs" />
     <Compile Include="src/Databases/BankAccountDb.fs" />
+    <Compile Include="src/Databases/BankTransferDb.fs" />
+    <Compile Include="src/Validations/CreateBankTransferValidation.fs" />
+    <Compile Include="src/Functions/CreateBankTransfer.fs" />
     <Compile Include="src/Functions/GetAccountOwners.fs" />
     <Compile Include="src/Functions/GetBankAccounts.fs" />
   </ItemGroup>
@@ -27,6 +34,7 @@
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
     <PackageReference Include="FSharp.Json" Version="0.4.0" />
+    <PackageReference Include="Npgsql" Version="4.1.4" />
     <PackageReference Include="Npgsql.FSharp" Version="3.6.0" />
   </ItemGroup>
 

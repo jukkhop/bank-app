@@ -10,6 +10,14 @@ package:
   artifact: bin/Release/netcoreapp3.1/deploy-package.zip
 
 functions:
+  create-bank-transfer:
+    handler: BankApp::Bank.CreateBankTransfer::handler
+    events:
+      - http:
+          path: /create-bank-transfer
+          method: post
+          cors: true
+
   get-account-owners:
     handler: BankApp::Bank.GetAccountOwners::handler
     events:
