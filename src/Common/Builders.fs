@@ -22,15 +22,10 @@ module ResultBuilder =
     | true -> Ok ()
     | false -> Error err
 
-  let orFailWith (err: string -> 'a) (value: Result<'b, exn>) : Result<'b, 'a> =
+  let orFailWith (err: string -> 'b) (value: Result<'a, exn>) : Result<'a, 'b> =
     match value with
     | Ok x -> Ok x
     | Error ex -> Error (err ex.Message)
-
-  let orFailWithFn (fn: 'a -> 'b) (value: Result<'c, 'a>) : Result<'c, 'b> =
-    match value with
-    | Ok x -> Ok x
-    | Error x -> Error (fn x)
 
   let continueWith (fn: 'a -> Result<'b, 'c>) (value: Result<'a, 'c>) : Result<'b, 'c> =
     match value with

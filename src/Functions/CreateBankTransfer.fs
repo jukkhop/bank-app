@@ -14,7 +14,7 @@ module CreateBankTransfer =
 
     result {
       do! CreateBankTransferValidation.validate data
-          |> orFailWithFn mkValidationErrorResponse
+          |> Result.mapError mkValidationErrorResponse
 
       let transferResult =
         BankTransferDb.makeTransfer
