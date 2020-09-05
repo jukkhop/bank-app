@@ -1,7 +1,6 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
-open Amazon.Lambda.Core
 open Bank.HttpUtils
 open Bank.ResultBuilder
 
@@ -9,7 +8,7 @@ module CreateBankTransfer =
 
   let private result = ResultBuilder()
 
-  let handler(req: APIGatewayProxyRequest, _: ILambdaContext): APIGatewayProxyResponse =
+  let handler(req: APIGatewayProxyRequest): APIGatewayProxyResponse =
     let data = Json.deserialize<CreateBankTransferDto> req.Body
 
     let response = result {
