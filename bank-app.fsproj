@@ -17,7 +17,6 @@
     <Compile Include="src/Common/HttpUtils.fs" />
     <Compile Include="src/Common/AccountNumberUtils.fs" />
     <Compile Include="src/Common/Constructors.fs" />
-    <Compile Include="src/Common/Converters.fs" />
     <Compile Include="src/Common/Validation.fs" />
     <Compile Include="src/Common/Validators.fs" />
     <Compile Include="src/Databases/Database.fs" />

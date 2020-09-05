@@ -67,5 +67,3 @@ module BankTransferDb =
 
       else Error <| failwith "foo"
     )
-
-

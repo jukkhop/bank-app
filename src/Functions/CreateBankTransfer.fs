@@ -10,9 +10,9 @@ module CreateBankTransfer =
 
     let validationSuccess (data: CreateBankTransferDto) =
       match BankTransferDb.makeTransfer
-        (AccountId data.FromAccountId.Value)
-        (AccountId data.ToAccountId.Value)
-        (TransferAmount data.AmountEurCents.Value) with
+        (data.FromAccountId.Value |> AccountId)
+        (data.ToAccountId.Value |> AccountId)
+        (data.AmountEurCents.Value |> TransferAmount) with
       | Ok transfer -> mkSuccessResponse [transfer]
       | Error ex -> mkGenericErrorResponse 500 ex.Message
 
