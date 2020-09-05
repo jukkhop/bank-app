@@ -19,3 +19,8 @@ module Utils =
     match value with
     | null -> None
     | value -> Some value
+
+  let unitize (res: Result<'a, 'b>) : Result<unit, 'b> =
+    match res with
+    | Ok _ -> Ok ()
+    | Error ex -> Error ex

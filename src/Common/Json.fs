@@ -9,6 +9,6 @@ module Json =
 
   let serialize (obj: obj) : string =
     Json.serializeEx config obj
-    
+
   let deserialize<'a> (json: string) : 'a =
     Json.deserializeEx<'a> config json

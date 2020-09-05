@@ -13,7 +13,7 @@ module BankAccountDb =
     BalanceEurCents = read.int64 "balance_eur_cents" |> AccountBalance
   }
 
-  let getAll: Result<BankAccount list, exn> =
+  let getAll () : Result<BankAccount list, exn> =
     let sql = @"
       select
         a.account_id,
@@ -27,24 +27,23 @@ module BankAccountDb =
         o.date_of_birth
       from bank_account a
       join account_owner o using (owner_id)"
-    query sql convert
+    query sql [] convert
 
-  let increaseBalance : Transaction -> AccountId -> TransferAmount -> Result<int, exn> =
-    fun tx (AccountId id) (TransferAmount amount) ->
-      let sql = sprintf @"
-        update bank_account
-        set balance_eur_cents = balance_eur_cents + %i
-        where account_id = %i" amount id
-      nonQueryTx tx sql
+  let increaseBalance (tx: Transaction) (AccountId id) (TransferAmount amount) : Result<unit, exn> =
+    let sql = @"
+      update bank_account
+      set balance_eur_cents = balance_eur_cents + @amount
+      where account_id = @id"
 
-  let decreaseBalance : Transaction -> AccountId -> TransferAmount -> Result<int, exn> =
-    fun tx id (TransferAmount amount) ->
-      increaseBalance tx id (TransferAmount <| amount * -1L)
+    nonQueryTx tx sql [ "@amount", upcast amount
+                        "@id", upcast id ]
 
-  let getBalance : Transaction -> AccountId -> Result<AccountBalance, exn> =
-    fun tx (AccountId id) ->
-      let sql = sprintf @"
-        select balance_eur_cents
-        from bank_account
-        where account_id = %i" id
-      rowTx tx sql (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
+  let decreaseBalance (tx: Transaction) (id: AccountId) (TransferAmount amount) : Result<unit, exn> =
+    increaseBalance tx id (amount * -1L |> TransferAmount)
+
+  let getBalance (tx: Transaction) (AccountId id) : Result<AccountBalance, exn> =
+    let sql = @"
+      select balance_eur_cents
+      from bank_account
+      where account_id = @id"
+    rowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)

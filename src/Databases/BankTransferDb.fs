@@ -17,48 +17,55 @@ module BankTransferDb =
 
   let private insertTransfer : Transaction -> AccountId -> AccountId -> TransferAmount -> Result<TransferId, exn> =
     fun tx (AccountId fromId) (AccountId toId) (TransferAmount amount) ->
-      let sql = sprintf @"
+      let sql = @"
         insert into bank_transfer
           (created_at, from_account_id, to_account_id, amount_eur_cents, result)
         values
-          (now(), %i, %i, %i, 'Success')
-        returning transfer_id" fromId toId amount
-      rowTx tx sql (fun read -> read.int64 "transfer_id" |> TransferId)
+          (now(), @fromId, @toId, @amount, 'Success')
+        returning transfer_id"
 
-  let getTransfer : Transaction -> TransferId -> Result<BankTransfer, exn> =
-    fun tx (TransferId id) ->
-      let sql = sprintf @"
-        select
-          transfer_id,
-          created_at,
-          from_account_id,
-          to_account_id,
-          amount_eur_cents,
-          result
-        from bank_transfer
-        where transfer_id = %i" id
-      rowTx tx sql convert
+      let parms: list<string * obj> = [
+        "@fromId", upcast fromId
+        "@toId", upcast toId
+        "@amount", upcast amount
+      ]
 
-  let makeTransfer : AccountId -> AccountId -> TransferAmount -> Result<BankTransfer, exn> =
-    fun fromId toId amount ->
-      inTransaction (fun tx ->
-        let balance =
-          match BankAccountDb.getBalance tx fromId with
-          | Ok balance -> balance
+      rowTx tx sql parms (fun read -> read.int64 "transfer_id" |> TransferId)
+
+  let getTransfer (tx: Transaction) (TransferId id) : Result<BankTransfer, exn> =
+    let sql = @"
+      select
+        transfer_id,
+        created_at,
+        from_account_id,
+        to_account_id,
+        amount_eur_cents,
+        result
+      from bank_transfer
+      where transfer_id = @id"
+    rowTx tx sql ["@id", upcast id] convert
+
+  let makeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, exn> =
+    inTransaction (fun tx ->
+      let balance =
+        match BankAccountDb.getBalance tx fromId with
+        | Ok balance -> balance
+        | Error ex -> raise ex
+
+      let (AccountBalance bal), (TransferAmount amt) = balance, amount
+
+      if bal >= amt then
+        BankAccountDb.decreaseBalance tx fromId amount |> ignore
+        BankAccountDb.increaseBalance tx toId amount |> ignore
+
+        let transferId =
+          match insertTransfer tx fromId toId amount with
+          | Ok transferId -> transferId
           | Error ex -> raise ex
 
-        let (AccountBalance bal), (TransferAmount amt) = balance, amount
+        getTransfer tx transferId
 
-        if bal >= amt then
-          BankAccountDb.decreaseBalance tx fromId amount |> ignore
-          BankAccountDb.increaseBalance tx toId amount |> ignore
+      else Error <| failwith "foo"
+    )
 
-          let transferId =
-            match insertTransfer tx fromId toId amount with
-            | Ok transferId -> transferId
-            | Error ex -> raise ex
 
-          getTransfer tx transferId
-
-        else Error <| failwith "foo"
-      )

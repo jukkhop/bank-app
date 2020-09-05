@@ -15,8 +15,7 @@ module AccountOwnerDb =
     DateOfBirth = read.date "date_of_birth" |> mkDateTime
   }
 
-  let getAll: Result<AccountOwner list, exn> =
-  
+  let getAll () : Result<AccountOwner list, exn> =
     let sql = @"
       select
         owner_id,
@@ -26,5 +25,4 @@ module AccountOwnerDb =
         nationality,
         date_of_birth
       from account_owner"
-
-    query sql convert
+    query sql [] convert
