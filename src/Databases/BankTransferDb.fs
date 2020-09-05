@@ -53,25 +53,16 @@ module BankTransferDb =
           BankAccountDb.getBalance tx fromId
           |> orFailWith DatabaseError
 
-        let (AccountBalance bal), (TransferAmount amt) = balance, amount
-        let! _ = (bal >= amt) |> isTrueOrFailWith InsufficientFunds
+        let (AccountBalance bal),
+            (TransferAmount amt) = balance, amount
 
-        let! _ =
+        do! (bal >= amt) |> isTrueOrFailWith InsufficientFunds
+
+        return!
           BankAccountDb.decreaseBalance tx fromId amount
+          |> continueWith (fun _ -> BankAccountDb.increaseBalance tx toId amount)
+          |> continueWith (fun _ -> insertTransfer tx fromId toId amount)
+          |> continueWith (fun transferId -> getTransfer tx transferId)
           |> orFailWith DatabaseError
-
-        let! _ =
-          BankAccountDb.increaseBalance tx toId amount
-          |> orFailWith DatabaseError
-
-        let! transferId =
-          insertTransfer tx fromId toId amount
-          |> orFailWith DatabaseError
-
-        let! transfer =
-          getTransfer tx transferId
-          |> orFailWith DatabaseError
-
-        return transfer
       }
     )

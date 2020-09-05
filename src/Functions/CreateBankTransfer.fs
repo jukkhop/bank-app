@@ -12,9 +12,8 @@ module CreateBankTransfer =
     let data = Json.deserialize<CreateBankTransferDto> req.Body
 
     let response = result {
-      let! _ =
-        CreateBankTransferValidation.validate data
-        |> orFailWithFn mkValidationErrorResponse
+      do! CreateBankTransferValidation.validate data
+          |> orFailWithFn mkValidationErrorResponse
 
       let transferResult =
         BankTransferDb.makeTransfer
@@ -22,7 +21,7 @@ module CreateBankTransfer =
           (data.ToAccountId.Value |> AccountId)
           (data.AmountEurCents.Value |> TransferAmount)
 
-      let! resp =
+      return!
         match transferResult with
         | Ok transfer -> Ok <| mkSuccessResponse [transfer]
         | Error err ->
@@ -30,8 +29,6 @@ module CreateBankTransfer =
           | InsufficientFunds -> Error <| mkSpecificErrorResponse (string err) "Insufficient funds on the account"
           | DatabaseError msg
           | OtherError msg -> Error <| mkSpecificErrorResponse (string err) msg
-
-      return resp
     }
 
     response |> ResultBuilder.Flatten

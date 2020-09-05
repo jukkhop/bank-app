@@ -1,14 +1,16 @@
 namespace Bank
 
 type ResultBuilder() =
-  member this.Bind(value, fn) =
+  member __.Bind (value, fn) =
     match value with
     | Ok x -> fn x
     | Error x -> Error x
 
-  member this.Return value = Ok value
+  member __.Return (value) = Ok value
 
-  static member Flatten value =
+  member __.ReturnFrom (value) = value
+
+  static member Flatten (value) =
     match value with
     | Ok x -> x
     | Error x -> x
@@ -29,3 +31,8 @@ module ResultBuilder =
     match value with
     | Ok x -> Ok x
     | Error x -> Error (fn x)
+
+  let andThen (fn: 'a -> Result<'c, 'b>) (value: Result<'a, 'b>) : Result<'c, 'b> =
+    match value with
+    | Ok x -> fn x
+    | Error x -> Error x
