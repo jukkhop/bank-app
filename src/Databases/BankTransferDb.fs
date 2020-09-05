@@ -1,5 +1,6 @@
 namespace Bank
 
+open Bank.BankAccountDb
 open Bank.Database
 open Bank.ResultBuilder
 open Npgsql.FSharp
@@ -50,7 +51,7 @@ module BankTransferDb =
     inTransaction (fun tx ->
       result {
         let! balance =
-          BankAccountDb.getBalance tx fromId
+          getBalance tx fromId
           |> orFailWith DatabaseError
 
         let (AccountBalance bal),
@@ -59,8 +60,8 @@ module BankTransferDb =
         do! (bal >= amt) |> isTrueOrFailWith InsufficientFunds
 
         return!
-          BankAccountDb.decreaseBalance tx fromId amount
-          |> continueWith (fun _ -> BankAccountDb.increaseBalance tx toId amount)
+          decreaseBalance tx fromId amount
+          |> continueWith (fun _ -> increaseBalance tx toId amount)
           |> continueWith (fun _ -> insertTransfer tx fromId toId amount)
           |> continueWith (fun transferId -> getTransfer tx transferId)
           |> orFailWith DatabaseError

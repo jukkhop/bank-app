@@ -1,12 +1,13 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
+open Bank.Extractors
 open Bank.HttpUtils
 open Bank.ResultBuilder
 
 module CreateBankTransfer =
 
-  let private result = ResultBuilder()
+  let private result = ResultBuilder ()
 
   let handler(req: APIGatewayProxyRequest): APIGatewayProxyResponse =
     let data = Json.deserialize<CreateBankTransferDto> req.Body
@@ -24,11 +25,7 @@ module CreateBankTransfer =
       return!
         match transferResult with
         | Ok transfer -> Ok <| mkSuccessResponse [transfer]
-        | Error err ->
-          match err with
-          | InsufficientFunds -> Error <| mkSpecificErrorResponse (string err) "Insufficient funds on the account"
-          | DatabaseError msg
-          | OtherError msg -> Error <| mkSpecificErrorResponse (string err) msg
+        | Error err -> Error <| mkErrorResponse (string err) (extTransferError err)
     }
 
     response |> ResultBuilder.Flatten

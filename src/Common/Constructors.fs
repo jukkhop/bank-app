@@ -8,8 +8,7 @@ module Constructors =
   let mkDateTime (date: NpgsqlTypes.NpgsqlDate) =
     DateTime(date.Year, date.Month, date.Day)
 
-  let mkNationality str =
-    match str with
+  let mkNationality = function
     | "Austria" -> Some Austria
     | "Denmark" -> Some Denmark
     | "Netherlands" -> Some Netherlands

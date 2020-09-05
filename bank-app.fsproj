@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="src/Types/Computations.fs" />
     <Compile Include="src/Types/Domain.fs" />
     <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Dto.fs" />
@@ -17,7 +16,9 @@
     <Compile Include="src/Common/Utils.fs" />
     <Compile Include="src/Common/HttpUtils.fs" />
     <Compile Include="src/Common/AccountNumberUtils.fs" />
+    <Compile Include="src/Common/Builders.fs" />
     <Compile Include="src/Common/Constructors.fs" />
+    <Compile Include="src/Common/Extractors.fs" />
     <Compile Include="src/Common/Validation.fs" />
     <Compile Include="src/Common/Validators.fs" />
     <Compile Include="src/Databases/Database.fs" />
