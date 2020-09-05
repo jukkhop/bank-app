@@ -9,10 +9,10 @@ module CreateBankTransfer =
 
   let private result = ResultBuilder ()
 
-  let handler(req: APIGatewayProxyRequest): APIGatewayProxyResponse =
+  let handler (req: APIGatewayProxyRequest) : APIGatewayProxyResponse =
     let data = Json.deserialize<CreateBankTransferDto> req.Body
 
-    let response = result {
+    result {
       do! CreateBankTransferValidation.validate data
           |> orFailWithFn mkValidationErrorResponse
 
@@ -25,7 +25,7 @@ module CreateBankTransfer =
       return!
         match transferResult with
         | Ok transfer -> Ok <| mkSuccessResponse [transfer]
-        | Error err -> Error <| mkErrorResponse (string err) (extTransferError err)
-    }
+        | Error err -> Error <| mkErrorResponse (txrErrorReason err) (txrErrorMsg err)
 
-    response |> ResultBuilder.Flatten
+    } |> either
+

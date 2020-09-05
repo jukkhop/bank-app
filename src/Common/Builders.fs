@@ -10,12 +10,12 @@ type ResultBuilder () =
 
   member __.ReturnFrom (value) = value
 
-  static member Flatten (value) =
+module ResultBuilder =
+
+  let either (value: Result<'a, 'a>) : 'a =
     match value with
     | Ok x -> x
     | Error x -> x
-
-module ResultBuilder =
 
   let isTrueOrFailWith (err: 'a) (cond: bool) : Result<unit, 'a> =
     match cond with

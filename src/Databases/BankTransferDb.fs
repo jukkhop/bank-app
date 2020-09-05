@@ -48,7 +48,7 @@ module BankTransferDb =
     rowTx tx sql ["@id", upcast id] convert
 
   let makeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, TransferError> =
-    inTransaction (fun tx ->
+    let txResult = inTransaction (fun tx ->
       result {
         let! balance =
           getBalance tx fromId
@@ -67,3 +67,6 @@ module BankTransferDb =
           |> orFailWith DatabaseError
       }
     )
+    match txResult with
+    | Ok result -> result
+    | Error ex -> Error <| DatabaseError ex.Message

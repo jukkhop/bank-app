@@ -50,13 +50,18 @@ module Database =
   let nonQuery (sql: string) (parms: Params) : Result<unit, exn> =
     mkQuery sql parms |> Sql.executeNonQuery |> unitize
 
-  let inTransaction (fn: Transaction -> 'a) : 'a =
-    use connection = new NpgsqlConnection(connectionString)
-    connection.Open()
-    use transaction = connection.BeginTransaction()
-    let result = fn transaction
-    transaction.Commit()
-    result
+  let inTransaction (fn: Transaction -> Result<'a, 'b>) : Result<Result<'a, 'b>, exn> =
+    try
+      use connection = new NpgsqlConnection(connectionString)
+      connection.Open()
+      use transaction = connection.BeginTransaction()
+      let result = fn transaction
+      match result with
+        | Ok _ -> transaction.Commit()
+        | Error _ -> transaction.Rollback()
+      Ok result
+    with
+      | ex -> Error ex
 
   let queryTx (tx: Transaction) (sql: string) (parms: Params) (read: Read<'a>) : Result<'a list, exn> =
     mkQueryTx tx sql parms |> Sql.execute read

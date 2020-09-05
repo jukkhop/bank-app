@@ -10,7 +10,7 @@ do ()
 
 module GetAccountOwners =
 
-  let handler(_: APIGatewayProxyRequest): APIGatewayProxyResponse =
+  let handler (_: APIGatewayProxyRequest) : APIGatewayProxyResponse =
     match AccountOwnerDb.getAll() with
     | Ok owners -> mkSuccessResponse owners
     | Error ex -> mkGenericErrorResponse 500 ex.Message
