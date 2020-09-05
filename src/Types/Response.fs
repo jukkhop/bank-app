@@ -8,6 +8,11 @@ type GenericErrorBody = {
   Message: string
 }
 
+type SpecificErrorBody = {
+  Reason: string
+  Message: string
+}
+
 type ValidationError = {
   Field: string
   Message: string

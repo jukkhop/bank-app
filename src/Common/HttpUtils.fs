@@ -22,6 +22,13 @@ module HttpUtils =
       Headers = headers
     )
 
+  let mkSpecificErrorResponse (reason: string) (message: string) =
+    APIGatewayProxyResponse(
+      StatusCode = 500,
+      Body = Json.serialize { Reason = reason; Message = message },
+      Headers = headers
+    )
+
   let mkValidationErrorResponse (validationErrors: ValidationError list) =
     APIGatewayProxyResponse(
       StatusCode = 400,

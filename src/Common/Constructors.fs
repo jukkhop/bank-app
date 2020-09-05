@@ -31,14 +31,3 @@ module Constructors =
     if AccountNumberUtils.isValid str
       then AccountNumber str
       else failwith <| sprintf "Invalid account number: %s" str
-
-  let mkTransferResult str =
-    match str with
-    | "Success" -> Some Success
-    | "InsufficientFunds" -> Some InsufficientFunds
-    | "NetworkError" -> Some NetworkError
-    | "OtherError" -> Some OtherError
-    | _ -> None
-
-  let mkTransferResultOrFail str =
-    mkTransferResult str |> getOrFail <| sprintf "Invalid value for transfer result: %s" str

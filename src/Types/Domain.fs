@@ -22,11 +22,10 @@ type Nationality =
   | [<JsonUnionCase(Case="Netherlands")>] Netherlands
   | [<JsonUnionCase(Case="Sweden")>] Sweden
 
-type TransferResult =
-  | Success
+type TransferError =
   | InsufficientFunds
-  | NetworkError
-  | OtherError
+  | DatabaseError of string
+  | OtherError of string
 
 type AccountOwner = {
   OwnerId: OwnerId
@@ -50,5 +49,4 @@ type BankTransfer = {
   FromAccountId: AccountId
   ToAccountId: AccountId
   AmountEurCents: TransferAmount
-  Result: TransferResult
 }

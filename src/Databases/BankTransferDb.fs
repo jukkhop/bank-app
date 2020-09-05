@@ -1,10 +1,12 @@
 namespace Bank
 
-open Bank.Constructors
 open Bank.Database
+open Bank.ResultBuilder
 open Npgsql.FSharp
 
 module BankTransferDb =
+
+  let private result = ResultBuilder()
 
   let convert (read: RowReader) : BankTransfer = {
     TransferId = read.int64 "transfer_id" |> TransferId
@@ -12,16 +14,15 @@ module BankTransferDb =
     FromAccountId = read.int64 "from_account_id" |> AccountId
     ToAccountId = read.int64 "to_account_id" |> AccountId
     AmountEurCents = read.int64 "amount_eur_cents" |> TransferAmount
-    Result = read.text "result" |> mkTransferResultOrFail
   }
 
   let private insertTransfer : Transaction -> AccountId -> AccountId -> TransferAmount -> Result<TransferId, exn> =
     fun tx (AccountId fromId) (AccountId toId) (TransferAmount amount) ->
       let sql = @"
         insert into bank_transfer
-          (created_at, from_account_id, to_account_id, amount_eur_cents, result)
+          (created_at, from_account_id, to_account_id, amount_eur_cents)
         values
-          (now(), @fromId, @toId, @amount, 'Success')
+          (now(), @fromId, @toId, @amount)
         returning transfer_id"
 
       let parms: list<string * obj> = [
@@ -39,31 +40,38 @@ module BankTransferDb =
         created_at,
         from_account_id,
         to_account_id,
-        amount_eur_cents,
-        result
+        amount_eur_cents
       from bank_transfer
       where transfer_id = @id"
+
     rowTx tx sql ["@id", upcast id] convert
 
-  let makeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, exn> =
+  let makeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, TransferError> =
     inTransaction (fun tx ->
-      let balance =
-        match BankAccountDb.getBalance tx fromId with
-        | Ok balance -> balance
-        | Error ex -> raise ex
+      result {
+        let! balance =
+          BankAccountDb.getBalance tx fromId
+          |> orFailWith DatabaseError
 
-      let (AccountBalance bal), (TransferAmount amt) = balance, amount
+        let (AccountBalance bal), (TransferAmount amt) = balance, amount
+        let! _ = (bal >= amt) |> isTrueOrFailWith InsufficientFunds
 
-      if bal >= amt then
-        BankAccountDb.decreaseBalance tx fromId amount |> ignore
-        BankAccountDb.increaseBalance tx toId amount |> ignore
+        let! _ =
+          BankAccountDb.decreaseBalance tx fromId amount
+          |> orFailWith DatabaseError
 
-        let transferId =
-          match insertTransfer tx fromId toId amount with
-          | Ok transferId -> transferId
-          | Error ex -> raise ex
+        let! _ =
+          BankAccountDb.increaseBalance tx toId amount
+          |> orFailWith DatabaseError
 
-        getTransfer tx transferId
+        let! transferId =
+          insertTransfer tx fromId toId amount
+          |> orFailWith DatabaseError
 
-      else Error <| failwith "foo"
+        let! transfer =
+          getTransfer tx transferId
+          |> orFailWith DatabaseError
+
+        return transfer
+      }
     )

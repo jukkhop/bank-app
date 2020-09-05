@@ -21,6 +21,5 @@ create table bank_transfer(
   "created_at" timestamp with time zone not null,
   "from_account_id" bigint not null references bank_account (account_id),
   "to_account_id" bigint not null references bank_account (account_id),
-  "amount_eur_cents" bigint not null,
-  "result" varchar(255) not null
+  "amount_eur_cents" bigint not null
 );

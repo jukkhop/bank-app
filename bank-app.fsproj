@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="src/Types/Computations.fs" />
     <Compile Include="src/Types/Domain.fs" />
     <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Dto.fs" />
