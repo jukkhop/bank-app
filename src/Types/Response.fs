@@ -6,8 +6,8 @@ type HttpStatus =
   | Conflict = 409
   | InternalError = 500
 
-type OkBody<'A> = {
-  Results: 'A list
+type OkBody<'a> = {
+  Results: 'a list
 }
 
 type GenericErrorBody = {

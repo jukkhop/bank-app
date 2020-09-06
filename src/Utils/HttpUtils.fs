@@ -16,8 +16,8 @@ module HttpUtils =
       Headers = headers
     )
 
-  let mkSuccessResponse (results: 'A list) =
-    mkResponse HttpStatus.Ok <| Json.serialize { Results = results }
+  let mkSuccessResponse (body: 'a) =
+    mkResponse HttpStatus.Ok <| Json.serialize body
 
   let mkGenericErrorResponse (status: HttpStatus) (message: string) =
     mkResponse status <| Json.serialize { Message = message }

@@ -24,7 +24,7 @@ module CreateBankTransfer =
 
       return!
         match transferResult with
-        | Ok transfer -> Ok <| mkSuccessResponse [{ Transfer = transfer }]
+        | Ok transfer -> Ok <| mkSuccessResponse { Transfer = transfer }
         | Error error -> Error <| mkErrorResponse (toHttpStatus error) (toErrorBody error)
 
     } |> either

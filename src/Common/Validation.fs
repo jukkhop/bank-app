@@ -6,7 +6,7 @@ open Microsoft.FSharp.Reflection
 
 module Validation =
 
-  let validate (data: 'A) (schema: Map<string, Validator list>) : Result<Unit, ValidationError list> =
+  let validate (data: 'a) (schema: Map<string, Validator list>) : Result<Unit, ValidationError list> =
 
     let values =
       data.GetType() |> FSharpType.GetRecordFields

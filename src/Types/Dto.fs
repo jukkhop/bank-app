@@ -9,3 +9,11 @@ type CreateBankTransferDto = {
 type CreateBankTransferResponseDto = {
   Transfer: BankTransfer
 }
+
+type GetAccountOwnersResponseDto = {
+  Owners: AccountOwner list
+}
+
+type GetBankAccountsResponseDto = {
+  Accounts: BankAccount list
+}
