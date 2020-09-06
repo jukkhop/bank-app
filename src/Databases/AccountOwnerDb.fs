@@ -1,7 +1,9 @@
 namespace Bank
 
-open Bank.Constructors
 open Bank.Database
+open Bank.NationalityUtils
+open Bank.StringUtils
+open Bank.DateTimeUtils
 open Npgsql.FSharp
 
 module AccountOwnerDb =

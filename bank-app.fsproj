@@ -8,17 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="src/Builders/ResultBuilder.fs" />
     <Compile Include="src/Types/Domain.fs" />
     <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Dto.fs" />
     <Compile Include="src/Types/Validation.fs" />
     <Compile Include="src/Common/Json.fs" />
+    <Compile Include="src/Common/Patterns.fs" />
     <Compile Include="src/Common/Utils.fs" />
-    <Compile Include="src/Common/HttpUtils.fs" />
-    <Compile Include="src/Common/AccountNumberUtils.fs" />
-    <Compile Include="src/Common/Builders.fs" />
-    <Compile Include="src/Common/Constructors.fs" />
-    <Compile Include="src/Common/Extractors.fs" />
+    <Compile Include="src/Utils/AccountNumberUtils.fs" />
+    <Compile Include="src/Utils/DateTimeUtils.fs" />
+    <Compile Include="src/Utils/HttpUtils.fs" />
+    <Compile Include="src/Utils/NationalityUtils.fs" />
+    <Compile Include="src/Utils/StringUtils.fs" />
+    <Compile Include="src/Utils/TransferErrorUtils.fs" />
     <Compile Include="src/Common/Validation.fs" />
     <Compile Include="src/Common/Validators.fs" />
     <Compile Include="src/Databases/Database.fs" />

@@ -1,9 +1,9 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
-open Bank.Extractors
 open Bank.HttpUtils
 open Bank.ResultBuilder
+open Bank.TransferErrorUtils
 
 module CreateBankTransfer =
 
@@ -24,8 +24,7 @@ module CreateBankTransfer =
 
       return!
         match transferResult with
-        | Ok transfer -> Ok <| mkSuccessResponse [transfer]
-        | Error err -> Error <| mkErrorResponse (txrErrorReason err) (txrErrorMsg err)
+        | Ok transfer -> Ok <| mkSuccessResponse [{ Transfer = transfer }]
+        | Error error -> Error <| mkErrorResponse (toHttpStatus error) (toErrorBody error)
 
     } |> either
-

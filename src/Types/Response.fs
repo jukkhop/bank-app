@@ -1,5 +1,11 @@
 namespace Bank
 
+type HttpStatus =
+  | Ok = 200
+  | BadRequest = 400
+  | Conflict = 409
+  | InternalError = 500
+
 type OkBody<'A> = {
   Results: 'A list
 }
@@ -8,7 +14,7 @@ type GenericErrorBody = {
   Message: string
 }
 
-type SpecificErrorBody = {
+type ErrorBody = {
   Reason: string
   Message: string
 }

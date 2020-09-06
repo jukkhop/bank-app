@@ -1,6 +1,6 @@
 namespace Bank
 
-open Bank.Constructors
+open Bank.AccountNumberUtils
 open Bank.Database
 open Npgsql.FSharp
 

@@ -5,3 +5,7 @@ type CreateBankTransferDto = {
   ToAccountId: int64 option
   AmountEurCents: int64 option
 }
+
+type CreateBankTransferResponseDto = {
+  Transfer: BankTransfer
+}

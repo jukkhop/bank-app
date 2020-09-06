@@ -1,5 +1,6 @@
 namespace Bank
 
+open Bank.Patterns
 open Bank.Utils
 open Microsoft.FSharp.Reflection
 
@@ -18,5 +19,5 @@ module Validation =
       validators |> List.collect (validateValue field <| values.Item field)
 
     match schema |> Map.toList |> List.collect collectErrors with
-    | errors when errors.IsEmpty -> Ok ()
-    | errors -> Error errors
+    | IsEmpty -> Ok ()
+    | NonEmpty errors -> Error errors
