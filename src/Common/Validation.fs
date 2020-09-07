@@ -19,5 +19,5 @@ module Validation =
       validators |> List.collect (validateValue field <| values.Item field)
 
     match schema |> Map.toList |> List.collect collectErrors with
-    | IsEmpty -> Ok ()
-    | NonEmpty errors -> Error errors
+    | Empty -> Ok ()
+    | NotEmpty errors -> Error errors

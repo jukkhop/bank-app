@@ -2,7 +2,7 @@ namespace Bank
 
 module Patterns =
 
-  let (|IsEmpty|NonEmpty|) (list: 'a list) =
+  let (|Empty|NotEmpty|) (list: 'a list) =
     if list.IsEmpty
-      then IsEmpty
-      else NonEmpty list
+      then Empty
+      else NotEmpty list
