@@ -22,7 +22,7 @@ module ResultBuilder =
     | true -> Ok ()
     | false -> Error err
 
-  let orFailWith (err: string -> 'b) (value: Result<'a, exn>) : Result<'a, 'b> =
+  let orFailWithCase (err: string -> 'b) (value: Result<'a, exn>) : Result<'a, 'b> =
     match value with
     | Ok x -> Ok x
     | Error ex -> Error (err ex.Message)
@@ -31,3 +31,6 @@ module ResultBuilder =
     match value with
     | Ok x -> fn x
     | Error x -> Error x
+
+  let orFailWith (fn: 'b -> 'c) (value: Result<'a, 'b>) : Result<'a, 'c> =
+    Result.mapError fn value

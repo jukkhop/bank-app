@@ -11,5 +11,10 @@ module CreateBankTransferValidation =
     "AmountEurCents", [ requiredValidator ]
   ]
 
-  let validate (data: CreateBankTransferDto) : Result<Unit, ValidationError list> =
-    validate data schema
+  let private convert (data: CreateBankTransferDto) : ValidCreateBankTransferDto =
+    { FromAccountId = data.FromAccountId.Value |> AccountId
+      ToAccountId = data.ToAccountId.Value |> AccountId
+      AmountEurCents = data.AmountEurCents.Value |> TransferAmount }
+
+  let validate (data: CreateBankTransferDto) : Result<ValidCreateBankTransferDto, ValidationError list> =
+    validate data schema |> Result.map convert

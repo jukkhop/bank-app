@@ -52,7 +52,7 @@ module BankTransferDb =
       result {
         let! balance =
           getBalance tx fromId
-          |> orFailWith DatabaseError
+          |> orFailWithCase DatabaseError
 
         let (AccountBalance bal),
             (TransferAmount amt) = balance, amount
@@ -64,7 +64,7 @@ module BankTransferDb =
           |> continueWith (fun _ -> increaseBalance tx toId amount)
           |> continueWith (fun _ -> insertTransfer tx fromId toId amount)
           |> continueWith (fun transferId -> getTransfer tx transferId)
-          |> orFailWith DatabaseError
+          |> orFailWithCase DatabaseError
       }
     )
     match txResult with

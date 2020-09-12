@@ -10,9 +10,11 @@
   <ItemGroup>
     <Compile Include="src/Builders/ResultBuilder.fs" />
     <Compile Include="src/Types/Domain.fs" />
-    <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Dto.fs" />
+    <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Validation.fs" />
+    <Compile Include="src/Types/ValidDto.fs" />
+    <Compile Include="src/Common/Extensions.fs" />
     <Compile Include="src/Common/Json.fs" />
     <Compile Include="src/Common/Patterns.fs" />
     <Compile Include="src/Common/Utils.fs" />

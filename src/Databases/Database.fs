@@ -53,12 +53,12 @@ module Database =
   let inTransaction (fn: Transaction -> Result<'a, 'b>) : Result<Result<'a, 'b>, exn> =
     try
       use connection = new NpgsqlConnection(connectionString)
-      connection.Open()
+      do connection.Open()
       use transaction = connection.BeginTransaction()
       let result = fn transaction
       match result with
-        | Ok _ -> transaction.Commit()
-        | Error _ -> transaction.Rollback()
+        | Ok _ -> do transaction.Commit()
+        | Error _ -> do transaction.Rollback()
       Ok result
     with
       | ex -> Error ex

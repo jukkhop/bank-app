@@ -6,7 +6,7 @@ open Microsoft.FSharp.Reflection
 
 module Validation =
 
-  let validate (data: 'a) (schema: Map<string, Validator list>) : Result<Unit, ValidationError list> =
+  let validate (data: 'a) (schema: Map<string, Validator list>) : Result<'a, ValidationError list> =
 
     let values =
       data.GetType() |> FSharpType.GetRecordFields
@@ -19,5 +19,5 @@ module Validation =
       validators |> List.collect (validateValue field <| values.Item field)
 
     match schema |> Map.toList |> List.collect collectErrors with
-    | Empty -> Ok ()
+    | Empty -> Ok data
     | NotEmpty errors -> Error errors

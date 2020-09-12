@@ -16,14 +16,22 @@ module HttpUtils =
       Headers = headers
     )
 
-  let mkSuccessResponse (body: 'a) =
+  let deserialize<'a> (json: string) : Result<'a, ValidationError list> =
+    Json.deserialize<'a> json
+    |> Result.mapError (fun ex -> [{ Field = String.empty
+                                     Message = sprintf "Parse error: %s" ex.Message }])
+
+  let successResponse (body: 'a) =
     mkResponse HttpStatus.Ok <| Json.serialize body
 
-  let mkGenericErrorResponse (status: HttpStatus) (message: string) =
-    mkResponse status <| Json.serialize { Message = message }
-
-  let mkErrorResponse (status: HttpStatus) (error: ErrorBody) =
+  let errorResponse (status: HttpStatus) (error: ErrorBody) =
     mkResponse status <| Json.serialize error
 
-  let mkValidationErrorResponse (validationErrors: ValidationError list) =
+  let genericErrorResponse (status: HttpStatus) (message: string) =
+    mkResponse status <| Json.serialize { Message = message }
+
+  let parseErrorResponse (ex: exn) =
+    mkResponse HttpStatus.BadRequest <| Json.serialize { Message = ex.Message }
+
+  let validationErrorResponse (validationErrors: ValidationError list) =
     mkResponse HttpStatus.BadRequest <| Json.serialize { ValidationErrors = validationErrors }

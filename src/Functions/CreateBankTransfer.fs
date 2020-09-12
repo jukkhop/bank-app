@@ -1,6 +1,8 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
+open Bank.BankTransferDb
+open Bank.CreateBankTransferValidation
 open Bank.HttpUtils
 open Bank.ResultBuilder
 open Bank.TransferErrorUtils
@@ -10,21 +12,18 @@ module CreateBankTransfer =
   let private result = ResultBuilder ()
 
   let handler (req: APIGatewayProxyRequest) : APIGatewayProxyResponse =
-    let data = Json.deserialize<CreateBankTransferDto> req.Body
-
     result {
-      do! CreateBankTransferValidation.validate data
-          |> Result.mapError mkValidationErrorResponse
+      let! data =
+        req.Body
+        |> deserialize<CreateBankTransferDto>
+        |> continueWith validate
+        |> orFailWith validationErrorResponse
 
-      let transferResult =
-        BankTransferDb.makeTransfer
-          (data.FromAccountId.Value |> AccountId)
-          (data.ToAccountId.Value |> AccountId)
-          (data.AmountEurCents.Value |> TransferAmount)
+      let transferResult = makeTransfer data.FromAccountId data.ToAccountId data.AmountEurCents
 
       return!
         match transferResult with
-        | Ok transfer -> Ok <| mkSuccessResponse { Transfer = transfer }
-        | Error error -> Error <| mkErrorResponse (toHttpStatus error) (toErrorBody error)
+        | Ok transfer -> Ok <| successResponse { Transfer = transfer }
+        | Error error -> Error <| transferErrorResponse error
 
     } |> either
