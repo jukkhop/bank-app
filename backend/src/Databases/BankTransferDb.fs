@@ -51,8 +51,7 @@ module BankTransferDb =
     let txResult = inTransaction (fun tx ->
       result {
         let! balance =
-          getBalance tx fromId
-          |> orFailWithCase DatabaseError
+          getBalance tx fromId |> orFailWithCase DatabaseError
 
         let (AccountBalance bal),
             (TransferAmount amt) = balance, amount

@@ -12,12 +12,13 @@ module Database =
   type private Params = list<string * obj>
   type private Read<'a> = RowReader -> 'a
 
-  let private connectionString: string =
-    Sql.host "localhost"
-    |> Sql.port 5434
-    |> Sql.username "bank_user"
-    |> Sql.password "bank_password"
-    |> Sql.database "bank_db"
+  let private connectionString () : string =
+    let config = Config.getUnsafe.Postgres
+    Sql.host config.Host
+    |> Sql.port config.Port
+    |> Sql.username config.User
+    |> Sql.password config.Password
+    |> Sql.database config.Database
     |> Sql.formatConnectionString
 
   let private toSqlType (v: obj) =
@@ -30,7 +31,7 @@ module Database =
     parms |> List.map (fun (k, v) -> k, toSqlType v)
 
   let private mkQuery (sql: string) (parms: Params) : SqlProps =
-    connectionString
+    connectionString()
     |> Sql.connect
     |> Sql.query sql
     |> Sql.parameters (mkParams parms)
@@ -52,7 +53,7 @@ module Database =
 
   let inTransaction (fn: Transaction -> Result<'a, 'b>) : Result<Result<'a, 'b>, exn> =
     try
-      use connection = new NpgsqlConnection(connectionString)
+      use connection = new NpgsqlConnection(connectionString())
       do connection.Open()
       use transaction = connection.BeginTransaction()
       let result = fn transaction

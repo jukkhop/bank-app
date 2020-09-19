@@ -10,4 +10,4 @@ module StringUtils =
     | _ -> None
 
   let mkString50OrFail str =
-    mkString50 str |> getOrFail <| sprintf "Invalid string length: %i" str.Length
+    mkString50 str |> getOrFail (sprintf "Invalid string length: %i" str.Length)

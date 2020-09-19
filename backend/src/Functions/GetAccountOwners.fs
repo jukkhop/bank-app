@@ -14,3 +14,4 @@ module GetAccountOwners =
     match AccountOwnerDb.getAll() with
     | Ok owners -> successResponse { Owners = owners }
     | Error ex -> genericErrorResponse HttpStatus.InternalError ex.Message
+

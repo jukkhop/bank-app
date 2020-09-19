@@ -3,8 +3,14 @@ service: bank-app
 provider:
   name: aws
   runtime: dotnetcore3.1
-  region: eu-west-1
-  stage: dev
+  region: ${opt:region}
+  stage: ${opt:stage}
+  environment:
+    POSTGRES_HOST: ${opt:postgres-host}
+    POSTGRES_PORT: ${opt:postgres-port}
+    POSTGRES_USER: ${opt:postgres-user}
+    POSTGRES_PASSWORD: ${opt:postgres-password}
+    POSTGRES_DATABASE: ${opt:postgres-database}
 
 package:
   artifact: bin/Release/netcoreapp3.1/deploy-package.zip

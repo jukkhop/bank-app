@@ -12,4 +12,4 @@ module NationalityUtils =
     | _ -> None
 
   let mkNationalityOrFail str =
-    mkNationality str |> getOrFail <| sprintf "Invalid value for nationality: %s" str
+    mkNationality str |> getOrFail (sprintf "Invalid value for nationality: %s" str)

@@ -5,7 +5,7 @@ module Utils =
   let flip f x y = f y x
   let toList (a, b) = [a; b]
 
-  let getOrFail value msg =
+  let getOrFail msg value =
     match value with
     | Some x -> x
     | None -> failwith msg

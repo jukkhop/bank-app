@@ -9,29 +9,24 @@ module HttpUtils =
     "Content-Type", "application/json"
   ]
 
-  let private mkResponse (status: HttpStatus) (body: string) =
+  let private response (status: HttpStatus) (body: string) =
     APIGatewayProxyResponse(
       StatusCode = EnumToValue status,
       Body = body,
       Headers = headers
     )
 
-  let deserialize<'a> (json: string) : Result<'a, ValidationError list> =
-    Json.deserialize<'a> json
-    |> Result.mapError (fun ex -> [{ Field = String.empty
-                                     Message = sprintf "Parse error: %s" ex.Message }])
-
   let successResponse (body: 'a) =
-    mkResponse HttpStatus.Ok <| Json.serialize body
+    response HttpStatus.Ok <| Json.serialize body
 
   let errorResponse (status: HttpStatus) (error: ErrorBody) =
-    mkResponse status <| Json.serialize error
+    response status <| Json.serialize error
 
   let genericErrorResponse (status: HttpStatus) (message: string) =
-    mkResponse status <| Json.serialize { Message = message }
+    response status <| Json.serialize { Message = message }
 
   let parseErrorResponse (ex: exn) =
-    mkResponse HttpStatus.BadRequest <| Json.serialize { Message = ex.Message }
+    response HttpStatus.BadRequest <| Json.serialize { Message = ex.Message }
 
   let validationErrorResponse (validationErrors: ValidationError list) =
-    mkResponse HttpStatus.BadRequest <| Json.serialize { ValidationErrors = validationErrors }
+    response HttpStatus.BadRequest <| Json.serialize { ValidationErrors = validationErrors }

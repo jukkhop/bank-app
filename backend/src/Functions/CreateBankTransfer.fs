@@ -15,11 +15,13 @@ module CreateBankTransfer =
     result {
       let! data =
         req.Body
-        |> deserialize<CreateBankTransferDto>
-        |> continueWith validate
-        |> orFailWith validationErrorResponse
+        |> Json.deserialize<CreateBankTransferDto>
+        |> orFailWith parseErrorResponse
 
-      let transferResult = makeTransfer data.FromAccountId data.ToAccountId data.AmountEurCents
+      let! validData = validate data |> orFailWith validationErrorResponse
+
+      let transferResult =
+        makeTransfer validData.FromAccountId validData.ToAccountId validData.AmountEurCents
 
       return!
         match transferResult with

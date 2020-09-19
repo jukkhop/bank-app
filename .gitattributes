@@ -1,0 +1,3 @@
+*secret.tfvars filter=git-crypt diff=git-crypt
+*secrets.env filter=git-crypt diff=git-crypt
+.gitattributes !filter !diff

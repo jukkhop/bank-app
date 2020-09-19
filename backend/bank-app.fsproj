@@ -1,12 +1,10 @@
-﻿
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>BankApp</AssemblyName>
     <PackageId>bank-app</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="src/Builders/ResultBuilder.fs" />
     <Compile Include="src/Types/Domain.fs" />
@@ -14,10 +12,10 @@
     <Compile Include="src/Types/Response.fs" />
     <Compile Include="src/Types/Validation.fs" />
     <Compile Include="src/Types/ValidDto.fs" />
-    <Compile Include="src/Common/Extensions.fs" />
     <Compile Include="src/Common/Json.fs" />
     <Compile Include="src/Common/Patterns.fs" />
     <Compile Include="src/Common/Utils.fs" />
+    <Compile Include="src/Common/Config.fs" />
     <Compile Include="src/Utils/AccountNumberUtils.fs" />
     <Compile Include="src/Utils/DateTimeUtils.fs" />
     <Compile Include="src/Utils/HttpUtils.fs" />
@@ -35,7 +33,6 @@
     <Compile Include="src/Functions/GetAccountOwners.fs" />
     <Compile Include="src/Functions/GetBankAccounts.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
@@ -44,5 +41,4 @@
     <PackageReference Include="Npgsql" Version="4.1.4" />
     <PackageReference Include="Npgsql.FSharp" Version="3.6.0" />
   </ItemGroup>
-
 </Project>
