@@ -26,7 +26,7 @@ module Config =
   let private getEnvVarOrFail (name: string) : string =
     getEnvVar name |> getOrFail (sprintf "Environment variable %s not set" name)
 
-  let postgresConfig = {
+  let private postgresConfig = {
     Host = getEnvVarOrFail "POSTGRES_HOST"
     Port = getEnvVarOrFail "POSTGRES_PORT" |> int
     User = getEnvVarOrFail "POSTGRES_USER"

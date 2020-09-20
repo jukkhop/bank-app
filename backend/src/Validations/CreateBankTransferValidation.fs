@@ -1,14 +1,15 @@
 namespace Bank
 
+open Bank.BankAccountDb
 open Bank.Validation
 open Bank.Validators
 
 module CreateBankTransferValidation =
 
   let private schema = Map<string, Validator list> [
-    "FromAccountId", [ requiredValidator ]
-    "ToAccountId", [ requiredValidator ]
-    "AmountEurCents", [ requiredValidator ]
+    "FromAccountId", [ requiredValidator; accountIdExistsValidator accountIdExists ]
+    "ToAccountId", [ requiredValidator; accountIdExistsValidator accountIdExists ]
+    "AmountEurCents", [ requiredValidator; rangeValidator(1L, 100000000L) ]
   ]
 
   let private convert (data: CreateBankTransferDto) : ValidCreateBankTransferDto =

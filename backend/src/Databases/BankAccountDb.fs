@@ -47,3 +47,7 @@ module BankAccountDb =
       from bank_account
       where account_id = @id"
     rowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
+
+  let accountIdExists (id: int64) : Result<bool, exn> =
+    let sql = "select exists (select 1 from bank_account where account_id = @id)"
+    row sql ["@id", upcast id] (fun read -> read.bool "exists")

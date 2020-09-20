@@ -1,12 +1,7 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
-open Amazon.Lambda.Core
-open Amazon.Lambda.Serialization.Json
 open Bank.HttpUtils
-
-[<assembly:LambdaSerializer(typeof<JsonSerializer>)>]
-do ()
 
 module GetAccountOwners =
 

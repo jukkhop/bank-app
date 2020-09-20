@@ -12,8 +12,9 @@ module Database =
   type private Params = list<string * obj>
   type private Read<'a> = RowReader -> 'a
 
+  let private config = Config.getUnsafe.Postgres
+
   let private connectionString () : string =
-    let config = Config.getUnsafe.Postgres
     Sql.host config.Host
     |> Sql.port config.Port
     |> Sql.username config.User

@@ -13,6 +13,7 @@
     <Compile Include="src/Types/Validation.fs" />
     <Compile Include="src/Types/ValidDto.fs" />
     <Compile Include="src/Common/Json.fs" />
+    <Compile Include="src/Common/Operators.fs" />
     <Compile Include="src/Common/Patterns.fs" />
     <Compile Include="src/Common/Utils.fs" />
     <Compile Include="src/Common/Config.fs" />
@@ -32,6 +33,7 @@
     <Compile Include="src/Functions/CreateBankTransfer.fs" />
     <Compile Include="src/Functions/GetAccountOwners.fs" />
     <Compile Include="src/Functions/GetBankAccounts.fs" />
+    <Compile Include="src/Functions/LambdaJsonSerializer.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />

@@ -1,5 +1,7 @@
 namespace Bank
 
+open Bank.Patterns
+
 module Utils =
 
   let flip f x y = f y x
@@ -15,10 +17,10 @@ module Utils =
     | Some x -> x
     | None -> def
 
-  let nullableToOption value =
+  let nullableToOption (value: obj) : obj option =
     match value with
-    | null -> None
-    | value -> Some value
+    | SomeObj x -> Some x
+    | _ -> None
 
   let unitize (res: Result<'a, 'b>) : Result<unit, 'b> =
     match res with
