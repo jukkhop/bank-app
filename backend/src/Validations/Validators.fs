@@ -19,8 +19,7 @@ module Validators =
     | None -> Some <| mkError field "Value is required"
 
   let rangeValidator (min: int64, max: int64) (field: string) (value: obj option) : ValidationError option =
-    let value = Option.get value |> unbox<int64>
-    match value with
+    match Option.get value |> unbox<int64> with
     | x when x >=< (min, max) -> None
     | _ -> sprintf "Value is not within range, min: %i, max: %i" min max |> mkError field |> Some
 

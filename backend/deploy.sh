@@ -21,7 +21,7 @@ set +o allexport
 export AWS_ACCESS_KEY_ID="${TF_VAR_aws_access_key}"
 export AWS_SECRET_ACCESS_KEY="${TF_VAR_aws_secret_key}"
 
-db_host="$( \
+DB_HOST="$( \
   aws rds describe-db-instances \
   --db-instance-identifier bank-db-${env} \
   --query 'DBInstances[*].[Endpoint.Address]' \
@@ -31,7 +31,7 @@ db_host="$( \
 serverless deploy \
   --region ${TF_VAR_aws_region} \
   --stage ${TF_VAR_environment} \
-  --postgres-host ${db_host} \
+  --postgres-host ${DB_HOST} \
   --postgres-port ${TF_VAR_db_port} \
   --postgres-user ${TF_VAR_db_user} \
   --postgres-password ${TF_VAR_db_password} \

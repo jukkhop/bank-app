@@ -9,12 +9,12 @@ cd "$(dirname "$0")"
   exit 128
 )
 
-env="${1}"
+ENV="${1}"
 
 set -o allexport
 
-source "../environment/${env}-secrets.env"
-source "../environment/${env}-variables.env"
+source "../environment/${ENV}-secrets.env"
+source "../environment/${ENV}-variables.env"
 
 set +o allexport
 
