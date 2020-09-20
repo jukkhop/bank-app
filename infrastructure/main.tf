@@ -5,11 +5,19 @@ provider "aws" {
   region= "${var.aws_region}"
 }
 
-module "database" {
-  source = "./modules/rds"
-  name = "bank-db-${var.environment}"
-  database_name = "${var.db_database}"
-  password = "${var.db_password}"
-  username = "${var.db_user}"
-  port = "${var.db_port}"
+terraform {
+  backend "s3" {
+    bucket = "bank-app-infrastructure"
+    key = "bank-app.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+module "main" {
+  source = "./main"
+  environment = "${var.environment}"
+  db_database = "${var.db_database}"
+  db_password = "${var.db_password}"
+  db_user = "${var.db_user}"
+  db_port = "${var.db_port}"
 }
