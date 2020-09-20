@@ -1,11 +1,17 @@
 namespace Bank
 
 open Bank.Operators
+open System
 
 module Validators =
 
-  let mkError (field: string) (message: string) : ValidationError =
-    { Field = field; Message = message }
+  let private camelify (str: string) =
+    match Seq.toList str with
+    | head :: tail -> (Char.ToLower head :: tail) |> Array.ofList |> String.Concat
+    | [] -> str
+
+  let private mkError (field: string) (message: string) : ValidationError =
+    { Field = camelify field; Message = message }
 
   let requiredValidator (field: string) (value: obj option) : ValidationError option =
     match value with

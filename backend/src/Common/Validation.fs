@@ -1,6 +1,5 @@
 namespace Bank
 
-open Bank.Patterns
 open Bank.Utils
 open Microsoft.FSharp.Reflection
 
@@ -13,10 +12,10 @@ module Validation =
                      |> Seq.map (fun prop -> prop.Name, prop.GetValue(data) |> nullableToOption)
                      |> Map.ofSeq
 
-    let validateValue (field: string) (value: obj option) (validator: Validator) =
+    let validateValue (field: string) (value: obj option) (validator: Validator) : ValidationError option =
       validator field value
 
-    let collectErrors (field: string, validators: Validator list) =
+    let collectErrors (field: string, validators: Validator list) : ValidationError list =
       validators
       |> List.map (validateValue field <| values.Item field)
       |> List.choose id
