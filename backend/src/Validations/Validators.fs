@@ -1,17 +1,12 @@
 namespace Bank
 
 open Bank.Operators
-open System
+open Bank.StringUtils
 
 module Validators =
 
-  let private camelify (str: string) =
-    match Seq.toList str with
-    | head :: tail -> (Char.ToLower head :: tail) |> Array.ofList |> String.Concat
-    | [] -> str
-
   let private mkError (field: string) (message: string) : ValidationError =
-    { Field = camelify field; Message = message }
+    { Field = field |> camelify; Message = message }
 
   let requiredValidator (field: string) (value: obj option) : ValidationError option =
     match value with
@@ -29,4 +24,4 @@ module Validators =
     match exists id with
     | Ok true -> None
     | Ok false -> sprintf "Bank account with account ID %i not found" id |> mkError |> Some
-    | Error ex -> sprintf "Database error while checking account ID: %s" ex.Message |> mkError |> Some
+    | Error ex -> failwithf "Database error while checking account ID: %s" ex.Message

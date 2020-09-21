@@ -1,6 +1,7 @@
 namespace Bank
 
 open Bank.Utils
+open System
 
 module StringUtils =
 
@@ -11,3 +12,8 @@ module StringUtils =
 
   let mkString50OrFail str =
     mkString50 str |> getOrFail (sprintf "Invalid string length: %i" str.Length)
+
+  let camelify (str: string) =
+    match Seq.toList str with
+    | head :: tail -> (Char.ToLower head :: tail) |> Array.ofList |> String.Concat
+    | _ -> str
