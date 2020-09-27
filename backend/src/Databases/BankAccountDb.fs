@@ -1,17 +1,21 @@
 namespace Bank
 
 open Bank.AccountNumberUtils
+open Bank.AccountOwnerDb
 open Bank.Database
 open Npgsql.FSharp
+open System
 
 module BankAccountDb =
 
-  let convert (read: RowReader) : BankAccount = {
-    AccountId = read.int64 "account_id" |> AccountId
-    Owner = AccountOwnerDb.convert read
-    AccountNumber = read.text "account_number" |> mkAccountNumberOrFail
-    BalanceEurCents = read.int64 "balance_eur_cents" |> AccountBalance
-  }
+  type BankAccountDb() =
+    static member Convert (read: RowReader, ?columnPrefix: string) : BankAccount =
+      let prefix = defaultArg columnPrefix String.Empty
+      let column colName = prefix + colName
+      { AccountId = read.int64 (column "account_id") |> AccountId
+        Owner = AccountOwnerDb.Convert(read, prefix)
+        AccountNumber = read.text (column "account_number") |> mkAccountNumberOrFail
+        BalanceEurCents = read.int64 (column "balance_eur_cents") |> AccountBalance }
 
   let getAll () : Result<BankAccount list, exn> =
     let sql = @"
@@ -27,7 +31,8 @@ module BankAccountDb =
         o.date_of_birth
       from bank_account a
       join account_owner o using (owner_id)"
-    query sql [] convert
+
+    query sql [] BankAccountDb.Convert
 
   let increaseBalance (tx: Transaction) (AccountId id) (TransferAmount amount) : Result<unit, exn> =
     let sql = @"

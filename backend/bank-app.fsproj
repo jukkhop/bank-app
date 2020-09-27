@@ -34,6 +34,7 @@
     <Compile Include="src/Functions/CreateBankTransfer.fs" />
     <Compile Include="src/Functions/GetAccountOwners.fs" />
     <Compile Include="src/Functions/GetBankAccounts.fs" />
+    <Compile Include="src/Functions/GetBankTransfers.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />

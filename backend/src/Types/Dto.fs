@@ -17,3 +17,7 @@ type GetAccountOwnersResponseDto = {
 type GetBankAccountsResponseDto = {
   Accounts: BankAccount list
 }
+
+type GetBankTransfersResponseDto = {
+  Transfers: BankTransfer list
+}

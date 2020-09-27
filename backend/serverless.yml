@@ -39,3 +39,11 @@ functions:
           path: /get-bank-accounts
           method: get
           cors: true
+
+  get-bank-transfers:
+    handler: BankApp::Bank.GetBankTransfers::handler
+    events:
+      - http:
+          path: /get-bank-transfers
+          method: get
+          cors: true

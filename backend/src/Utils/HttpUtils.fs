@@ -6,6 +6,8 @@ open FSharp.Core.LanguagePrimitives
 module HttpUtils =
 
   let private headers = Map [
+    "Access-Control-Allow-Credentials", "true"
+    "Access-Control-Allow-Origin", "*"
     "Content-Type", "application/json"
   ]
 

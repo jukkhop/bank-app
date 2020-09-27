@@ -5,17 +5,20 @@ open Bank.NationalityUtils
 open Bank.StringUtils
 open Bank.DateTimeUtils
 open Npgsql.FSharp
+open System
 
 module AccountOwnerDb =
 
-  let convert (read: RowReader) : AccountOwner = {
-    OwnerId = read.int64 "owner_id" |> OwnerId
-    FirstName = read.text "first_name" |> mkString50OrFail |> FirstName
-    MiddleName = read.textOrNone "middle_name" |> Option.map (mkString50OrFail >> MiddleName)
-    LastName = read.text "last_name" |> mkString50OrFail |> LastName
-    Nationality = read.text "nationality" |> mkNationalityOrFail
-    DateOfBirth = read.date "date_of_birth" |> mkDateTime
-  }
+  type AccountOwnerDb() =
+    static member Convert (read: RowReader, ?columnPrefix: string) : AccountOwner =
+      let prefix = defaultArg columnPrefix String.Empty
+      let column colName = prefix + colName
+      { OwnerId = read.int64 (column "owner_id") |> OwnerId
+        FirstName = read.text (column "first_name") |> mkString50OrFail |> FirstName
+        MiddleName = read.textOrNone (column "middle_name") |> Option.map (mkString50OrFail >> MiddleName)
+        LastName = read.text (column "last_name") |> mkString50OrFail |> LastName
+        Nationality = read.text (column "nationality") |> mkNationalityOrFail
+        DateOfBirth = read.date (column "date_of_birth") |> mkDateTime }
 
   let getAll () : Result<AccountOwner list, exn> =
     let sql = @"
@@ -27,4 +30,5 @@ module AccountOwnerDb =
         nationality,
         date_of_birth
       from account_owner"
-    query sql [] convert
+
+    query sql [] AccountOwnerDb.Convert

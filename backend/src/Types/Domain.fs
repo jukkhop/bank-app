@@ -45,8 +45,8 @@ type BankAccount = {
 
 type BankTransfer = {
   TransferId: TransferId
-  Created: TransferCreatedAt
-  FromAccountId: AccountId
-  ToAccountId: AccountId
+  CreatedAt: TransferCreatedAt
+  FromAccount: BankAccount
+  ToAccount: BankAccount
   AmountEurCents: TransferAmount
 }
