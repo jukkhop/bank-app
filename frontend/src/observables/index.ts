@@ -1,5 +1,8 @@
-import { Observable, Subject, of } from 'rxjs'
-import { fromFetch } from 'rxjs/fetch'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Observable, Subject, of, Observer } from 'rxjs'
+import * as RxFetch from 'rxjs/fetch'
 import { catchError, startWith, switchMap } from 'rxjs/operators'
 import {
   CreateBankTransferRequest,
@@ -10,8 +13,8 @@ import {
 } from '../types'
 import { mkEndpointUrl } from '../utils'
 
-function createObservable<T>(url: string, init?: RequestInit): Observable<T> {
-  const observable = fromFetch(url, init).pipe(
+function fromFetch<T>(url: string, init?: RequestInit): Observable<T> {
+  return RxFetch.fromFetch(url, init).pipe(
     switchMap((response: Response) => {
       if (response.ok) {
         return response.json()
@@ -23,43 +26,41 @@ function createObservable<T>(url: string, init?: RequestInit): Observable<T> {
     }),
     startWith({ loading: true }),
     catchError((err: Error) => {
-      return of({
-        error: true,
-        message: err.message,
-      })
+      return of({ loading: false, error: true, message: err.message })
     }),
+  ) as Observable<T>
+}
+
+function fetchAndObserve<T>(url: string, init: RequestInit, observer: Observer<T>): void {
+  fromFetch<T>(url, init).subscribe(
+    (value) => observer.next(value),
+    (err) => observer.error(err),
   )
-
-  return observable
 }
 
-const getOwners$ = createObservable<GetAccountOwnersResponse>(mkEndpointUrl('get-account-owners'))
-const getAccounts$ = createObservable<GetBankAccountsResponse>(mkEndpointUrl('get-bank-accounts'))
-const getTransfers$ = createObservable<GetBankTransfersResponse>(
-  mkEndpointUrl('get-bank-transfers'),
-)
+const getOwners$ = fromFetch<GetAccountOwnersResponse>(mkEndpointUrl('get-account-owners'))
+const getAccounts$ = fromFetch<GetBankAccountsResponse>(mkEndpointUrl('get-bank-accounts'))
+const getTransfers$ = fromFetch<GetBankTransfersResponse>(mkEndpointUrl('get-bank-transfers'))
 
-const createTransferSubject = new Subject<CreateBankTransferResponse>()
-const createTransfer$ = createTransferSubject.asObservable()
+const createTransferSubject$ = new Subject<CreateBankTransferResponse>()
+const createTransfer$ = createTransferSubject$.asObservable()
 
-async function createTransfer(request: CreateBankTransferRequest): Promise<void> {
-  createTransferSubject.next({ loading: true, error: false })
-
-  const httpResponse = await fetch(mkEndpointUrl('create-bank-transfer'), {
-    body: JSON.stringify(request),
-    method: 'POST',
-  })
-
-  let response: CreateBankTransferResponse = { loading: false, error: false }
-
-  if (httpResponse.ok) {
-    const { transfer }: CreateBankTransferResponse = await httpResponse.json()
-    response = { ...response, transfer }
-  } else {
-    response = { ...response, error: true, message: httpResponse.statusText }
-  }
-
-  createTransferSubject.next(response)
+function dispatchCreateTransferRequest(request: CreateBankTransferRequest): void {
+  fetchAndObserve<CreateBankTransferResponse>(
+    mkEndpointUrl('create-bank-transfer'),
+    {
+      body: JSON.stringify(request),
+      method: 'POST',
+    },
+    createTransferSubject$,
+  )
 }
 
-export { getOwners$, getAccounts$, getTransfers$, createTransfer$, createTransfer }
+export {
+  createTransfer$,
+  dispatchCreateTransferRequest,
+  fromFetch,
+  getAccounts$,
+  getOwners$,
+  getTransfers$,
+}

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { useState, useEffect } from 'react'
 import { Observable } from 'rxjs'
 

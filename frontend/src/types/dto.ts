@@ -1,8 +1,8 @@
 import { AccountOwner, BankAccount, BankTransfer } from './domain'
 
 type ResponseCommon = {
-  loading?: boolean
-  error?: boolean
+  loading: boolean
+  error: boolean
   message?: string
 }
 
