@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
 
-import { toEuros } from '../../converters'
-import { useObservable } from '../../hooks'
-import { getAccounts$ } from '../../observables'
+import { toEuros } from '../../../converters'
+import { useObservable } from '../../../hooks'
+import { initials, sources } from '../../../store'
 
 function AccountsList(): JSX.Element {
-  const data = useObservable(getAccounts$)
+  const data = useObservable(sources.getAccounts, initials.getAccounts)
   const { accounts = [], loading, error, message } = data || {}
 
   if (loading) {

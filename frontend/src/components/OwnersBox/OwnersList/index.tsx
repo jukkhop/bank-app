@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
 
-import { fullName } from '../../converters'
-import { useObservable } from '../../hooks'
-import { getOwners$ } from '../../observables'
+import { fullName } from '../../../converters'
+import { useObservable } from '../../../hooks'
+import { initials, sources } from '../../../store'
 
 function OwnersList(): JSX.Element {
-  const data = useObservable(getOwners$)
+  const data = useObservable(sources.getOwners, initials.getOwners)
   const { owners = [], loading, error, message } = data || {}
 
   if (loading) {

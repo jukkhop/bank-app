@@ -2,16 +2,19 @@
 
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { takeWhile } from 'rxjs/operators'
 
-import CreateTransfer from '../../components/CreateTransfer'
+import CreateTransferForm from '../../components/CreateTransferBox/CreateTransferForm'
 import { useObservable } from '../../hooks'
-import { createTransfer$, dispatchCreateTransferRequest, getAccounts$ } from '../../observables'
-import { CreateBankTransferRequest } from '../../types'
+import { initials, sinks, sources } from '../../store'
+import { CreateTransferRequest } from '../../types'
 
-function CreateTransferContainer(): JSX.Element {
+const initialAccounts$ = sources.getAccounts.pipe(takeWhile((x) => x.loading, true))
+
+function CreateTransferFormContainer(): JSX.Element {
   const { errors: formErrors, handleSubmit, register } = useForm()
-  const accountsData = useObservable(getAccounts$)
-  const transferData = useObservable(createTransfer$)
+  const accountsData = useObservable(initialAccounts$, initials.getAccounts)
+  const transferData = useObservable(sources.createTransfer, initials.createTransfer)
 
   const { accounts = [], loading: accountsLoading = false, error: accountsError = false } =
     accountsData || {}
@@ -20,7 +23,7 @@ function CreateTransferContainer(): JSX.Element {
     transferData || {}
 
   return (
-    <CreateTransfer
+    <CreateTransferForm
       accounts={accounts}
       accountsError={accountsError}
       accountsLoading={accountsLoading}
@@ -39,12 +42,12 @@ type FormValues = {
 }
 
 function onCreateTransfer(values: FormValues): void {
-  const request: CreateBankTransferRequest = {
-    fromAccountId: Number(values.fromAccountId),
-    toAccountId: Number(values.toAccountId),
+  const request: CreateTransferRequest = {
+    fromAccountId: parseInt(values.fromAccountId, 10),
+    toAccountId: parseInt(values.toAccountId, 10),
     amountEurCents: parseFloat(values.amount) * 100,
   }
-  dispatchCreateTransferRequest(request)
+  sinks.createTransfer.next(request)
 }
 
-export default CreateTransferContainer
+export default CreateTransferFormContainer

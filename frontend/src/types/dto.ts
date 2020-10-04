@@ -6,22 +6,22 @@ type ResponseCommon = {
   message?: string
 }
 
-type GetAccountOwnersResponse = ResponseCommon & { owners?: AccountOwner[] }
-type GetBankAccountsResponse = ResponseCommon & { accounts?: BankAccount[] }
-type GetBankTransfersResponse = ResponseCommon & { transfers?: BankTransfer[] }
+type GetOwnersResponse = ResponseCommon & { owners?: AccountOwner[] }
+type GetAccountsResponse = ResponseCommon & { accounts?: BankAccount[] }
+type GetTransfersResponse = ResponseCommon & { transfers?: BankTransfer[] }
 
-type CreateBankTransferRequest = {
+type CreateTransferRequest = {
   fromAccountId: number
   toAccountId: number
   amountEurCents: number
 }
 
-type CreateBankTransferResponse = ResponseCommon & { transfer?: BankTransfer }
+type CreateTransferResponse = ResponseCommon & { transfer?: BankTransfer }
 
 export type {
-  GetAccountOwnersResponse,
-  GetBankAccountsResponse,
-  GetBankTransfersResponse,
-  CreateBankTransferRequest,
-  CreateBankTransferResponse,
+  GetOwnersResponse,
+  GetAccountsResponse,
+  GetTransfersResponse,
+  CreateTransferRequest,
+  CreateTransferResponse,
 }

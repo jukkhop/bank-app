@@ -20,8 +20,7 @@ module Validators =
 
   let accountIdExistsValidator (exists: int64 -> Result<bool, exn>) (field: string) (value: obj option) : ValidationError option =
     let id = Option.get value |> unbox<int64>
-    let mkError = mkError field
     match exists id with
     | Ok true -> None
-    | Ok false -> sprintf "Bank account with account ID %i not found" id |> mkError |> Some
+    | Ok false -> sprintf "Bank account with account ID %i not found" id |> mkError field |> Some
     | Error ex -> failwithf "Database error while checking account ID: %s" ex.Message

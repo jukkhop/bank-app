@@ -6,18 +6,15 @@ import { Columns, Button } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEuroSign,
-  faMoneyCheckAlt,
+  faExchangeAlt,
   faExclamationTriangle,
+  faMoneyCheckAlt,
 } from '@fortawesome/free-solid-svg-icons'
-import { BankAccount } from '../../types'
+import { BankAccount } from '../../../types'
 
 const { Column } = Columns
 
-const columnStyle = {
-  flexBasis: 'initial',
-  flexGrow: 0,
-  flexShrink: 0,
-}
+const columnStyle = { flexBasis: 'initial', flexGrow: 0, flexShrink: 0 }
 
 type CreateTransferProps = {
   accounts: BankAccount[]
@@ -29,7 +26,7 @@ type CreateTransferProps = {
   transferLoading: boolean
 }
 
-function CreateTransfer({
+function CreateTransferForm({
   accounts = [],
   accountsError,
   accountsLoading,
@@ -115,7 +112,10 @@ function CreateTransfer({
             </label>
             <div className='control'>
               <Button className={submitButtonClass} color='primary' type='submit'>
-                Transfer
+                <span className='icon is-small'>
+                  <FontAwesomeIcon icon={faExchangeAlt} />
+                </span>
+                <span>Transfer</span>
               </Button>
             </div>
           </div>
@@ -133,4 +133,4 @@ function accountToOption(account: BankAccount): JSX.Element {
   )
 }
 
-export default CreateTransfer
+export default CreateTransferForm

@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
 
-import { fullName, showDate, toEuros } from '../../converters'
-import { useObservable } from '../../hooks'
-import { getTransfers$ } from '../../observables'
+import { fullName, showDate, toEuros } from '../../../converters'
+import { useObservable } from '../../../hooks'
+import { initials, sources } from '../../../store'
 
 function TransfersList(): JSX.Element {
-  const data = useObservable(getTransfers$)
+  const data = useObservable(sources.getTransfers, initials.getTransfers)
   const { transfers = [], loading, error, message } = data || {}
 
   if (loading) {
