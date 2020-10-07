@@ -5,7 +5,7 @@ open Microsoft.FSharp.Reflection
 
 module Validation =
 
-  let validate (data: 'a) (schema: Map<string, Validator list>) : Result<'a, ValidationError list> =
+  let collectErrors (data: 'a) (schema: Map<string, Validator list>) : ValidationError list =
 
     let values: Map<string, obj option> =
       data.GetType() |> FSharpType.GetRecordFields
@@ -15,11 +15,14 @@ module Validation =
     let validateValue (field: string) (value: obj option) (validator: Validator) : ValidationError option =
       validator field value
 
-    let collectErrors (field: string, validators: Validator list) : ValidationError list =
+    let collectFieldErrors (field: string, validators: Validator list) : ValidationError list =
       validators
       |> List.map (validateValue field <| values.Item field)
       |> List.choose id
 
-    match schema |> Map.toList |> List.collect collectErrors with
+    schema |> Map.toList |> List.collect collectFieldErrors
+
+  let validate (data: 'a) (schema: Map<string, Validator list>) : Result<'a, ValidationError list> =
+    match collectErrors data schema with
     | [] -> Ok data
     | errors -> Error errors

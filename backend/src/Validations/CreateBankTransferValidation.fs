@@ -17,5 +17,17 @@ module CreateBankTransferValidation =
       ToAccountId = data.ToAccountId.Value |> AccountId
       AmountEurCents = data.AmountEurCents.Value |> TransferAmount }
 
+  let private differentAccountsValidator (data: CreateBankTransferDto) : ValidationError list =
+    let sameAccountError =
+      { Field = "(fromAccountId,toAccountId)"
+        Message = "Source and destination accounts cannot be the same account" }
+    match (data.FromAccountId, data.ToAccountId) with
+    | (Some fromId, Some toId) when fromId = toId -> List.singleton sameAccountError
+    | _ -> List.empty
+
   let validate (data: CreateBankTransferDto) : Result<ValidCreateBankTransferDto, ValidationError list> =
-    validate data schema |> Result.map convert
+    let validationErrors =
+      List.append (collectErrors data schema) (differentAccountsValidator data)
+    match validationErrors with
+    | [] -> Ok (convert data)
+    | errors -> Error errors
