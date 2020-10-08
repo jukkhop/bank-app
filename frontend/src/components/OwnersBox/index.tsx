@@ -4,11 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 import OwnersList from './OwnersList'
-import { sinks } from '../../store'
+import { AccountOwner } from '../../types'
 
 const { Item, Side } = Level
 
-function OwnersBox(): JSX.Element {
+type Props = {
+  owners: AccountOwner[]
+  loading: boolean
+  error: boolean
+  message: string | null
+  onRefresh: () => void
+}
+
+function OwnersBox({ owners, loading, error, message = null, onRefresh }: Props): JSX.Element {
+  const faIconClass = loading ? 'fa-spin' : ''
   return (
     <Box>
       <Level mobile>
@@ -23,18 +32,19 @@ function OwnersBox(): JSX.Element {
               <Button
                 className='button'
                 color='primary'
+                disabled={loading}
                 inverted
-                onClick={() => sinks.getOwners.next(null as never)}
+                onClick={onRefresh}
               >
                 <span className='icon is-small'>
-                  <FontAwesomeIcon icon={faSyncAlt} />
+                  <FontAwesomeIcon className={faIconClass} icon={faSyncAlt} />
                 </span>
               </Button>
             </p>
           </Item>
         </Side>
       </Level>
-      <OwnersList />
+      <OwnersList owners={owners} loading={loading} error={error} message={message} />
     </Box>
   )
 }

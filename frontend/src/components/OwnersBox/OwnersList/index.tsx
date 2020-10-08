@@ -1,14 +1,16 @@
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
-
 import { fullName } from '../../../converters'
-import { useObservable } from '../../../hooks'
-import { initials, sources } from '../../../store'
+import { AccountOwner } from '../../../types'
 
-function OwnersList(): JSX.Element {
-  const data = useObservable(sources.getOwners, initials.getOwners)
-  const { owners = [], loading, error, message } = data || {}
+type Props = {
+  owners: AccountOwner[]
+  loading: boolean
+  error: boolean
+  message: string | null
+}
 
+function OwnersList({ owners, loading, error, message = null }: Props): JSX.Element {
   if (loading) {
     return <Progress color='primary' size='small' />
   }

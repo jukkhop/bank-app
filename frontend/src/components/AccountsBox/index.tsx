@@ -4,11 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 import AccountsList from './AccountsList'
-import { sinks } from '../../store'
+import { BankAccount } from '../../types'
 
 const { Item, Side } = Level
 
-function App(): JSX.Element {
+type Props = {
+  accounts: BankAccount[]
+  loading: boolean
+  error: boolean
+  message: string | null
+  onRefresh: () => void
+}
+
+function AccountsBox({ accounts, loading, error, message = null, onRefresh }: Props): JSX.Element {
+  const faIconClass = loading ? 'fa-spin' : ''
   return (
     <Box>
       <Level mobile>
@@ -23,20 +32,21 @@ function App(): JSX.Element {
               <Button
                 className='button'
                 color='primary'
+                disabled={loading}
                 inverted
-                onClick={() => sinks.getAccounts.next(null as never)}
+                onClick={onRefresh}
               >
                 <span className='icon is-small'>
-                  <FontAwesomeIcon icon={faSyncAlt} />
+                  <FontAwesomeIcon className={faIconClass} icon={faSyncAlt} />
                 </span>
               </Button>
             </p>
           </Item>
         </Side>
       </Level>
-      <AccountsList />
+      <AccountsList accounts={accounts} loading={loading} error={error} message={message} />
     </Box>
   )
 }
 
-export default App
+export default AccountsBox

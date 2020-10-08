@@ -4,11 +4,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 import TransfersList from './TransfersList'
-import { sinks } from '../../store'
+import { BankTransfer } from '../../types'
 
 const { Item, Side } = Level
 
-function TransfersBox(): JSX.Element {
+type Props = {
+  transfers: BankTransfer[]
+  loading: boolean
+  error: boolean
+  message: string | null
+  onRefresh: () => void
+}
+
+function TransfersBox({
+  transfers,
+  loading,
+  error,
+  message = null,
+  onRefresh,
+}: Props): JSX.Element {
+  const faIconClass = loading ? 'fa-spin' : ''
   return (
     <Box>
       <Level mobile>
@@ -23,18 +38,19 @@ function TransfersBox(): JSX.Element {
               <Button
                 className='button'
                 color='primary'
+                disabled={loading}
                 inverted
-                onClick={() => sinks.getTransfers.next(null as never)}
+                onClick={onRefresh}
               >
                 <span className='icon is-small'>
-                  <FontAwesomeIcon icon={faSyncAlt} />
+                  <FontAwesomeIcon className={faIconClass} icon={faSyncAlt} />
                 </span>
               </Button>
             </p>
           </Item>
         </Side>
       </Level>
-      <TransfersList />
+      <TransfersList transfers={transfers} loading={loading} error={error} message={message} />
     </Box>
   )
 }

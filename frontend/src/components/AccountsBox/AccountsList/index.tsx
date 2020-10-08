@@ -1,14 +1,16 @@
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
-
 import { toEuros } from '../../../converters'
-import { useObservable } from '../../../hooks'
-import { initials, sources } from '../../../store'
+import { BankAccount } from '../../../types'
 
-function AccountsList(): JSX.Element {
-  const data = useObservable(sources.getAccounts, initials.getAccounts)
-  const { accounts = [], loading, error, message } = data || {}
+type Props = {
+  accounts: BankAccount[]
+  loading: boolean
+  error: boolean
+  message: string | null
+}
 
+function AccountsList({ accounts, loading, error, message = null }: Props): JSX.Element {
   if (loading) {
     return <Progress color='primary' size='small' />
   }
