@@ -6,9 +6,9 @@ open Bank.Validators
 
 module CreateBankTransferValidation =
 
-  let private schema = Map<string, Validator list> [
-    "FromAccountId", [ requiredValidator; accountIdExistsValidator accountIdExists ]
-    "ToAccountId", [ requiredValidator; accountIdExistsValidator accountIdExists ]
+  let private schema (db: IBankAccountDb) = Map<string, Validator list> [
+    "FromAccountId", [ requiredValidator; accountIdExistsValidator db.AccountIdExists ]
+    "ToAccountId", [ requiredValidator; accountIdExistsValidator db.AccountIdExists ]
     "AmountEurCents", [ requiredValidator; rangeValidator(1L, 100000000L) ]
   ]
 
@@ -25,9 +25,9 @@ module CreateBankTransferValidation =
     | (Some fromId, Some toId) when fromId = toId -> List.singleton sameAccountError
     | _ -> List.empty
 
-  let validate (data: CreateBankTransferDto) : Result<ValidCreateBankTransferDto, ValidationError list> =
+  let validate (db: IBankAccountDb) (data: CreateBankTransferDto) : Result<ValidCreateBankTransferDto, ValidationError list> =
     let validationErrors =
-      List.append (collectErrors data schema) (differentAccountsValidator data)
+      List.append (collectErrors data (schema db)) (differentAccountsValidator data)
     match validationErrors with
     | [] -> Ok (convert data)
     | errors -> Error errors

@@ -17,7 +17,7 @@ module Validation =
 
     let collectFieldErrors (field: string, validators: Validator list) : ValidationError list =
       validators
-      |> List.map (validateValue field <| values.Item field)
+      |> List.map (validateValue field (values.Item field))
       |> List.choose id
 
     schema |> Map.toList |> List.collect collectFieldErrors

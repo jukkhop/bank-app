@@ -19,6 +19,7 @@ module Utils =
 
   let nullableToOption (value: obj) : obj option =
     match value with
+    | null -> None
     | SomeObj x -> Some x
     | _ -> None
 

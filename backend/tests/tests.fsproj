@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Fixtures/TestData.fs" />
+    <Compile Include="Fixtures/TestUtils.fs" />
+    <Compile Include="Services/TransferServiceSpec.fs" />
+    <Compile Include="Validations/CreateBankTransferValidationSpec.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+    <PackageReference Include="Foq" Version="1.8.0" />
+    <PackageReference Include="FsUnit" Version="4.0.1" />
+    <PackageReference Include="FsUnit.xUnit" Version="4.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\bank-app.fsproj" />
+  </ItemGroup>
+</Project>

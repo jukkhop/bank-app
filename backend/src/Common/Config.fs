@@ -17,24 +17,31 @@ module Config =
     Postgres: PostgresConfig
   }
 
+  let defaultConfig: Config = {
+    Postgres = {
+      Host = "localhost"
+      Port = 5434
+      User = "bank_user"
+      Password = "bank_password"
+      Database = "bank_db"
+    }
+  }
+
   let private getEnvVar (name: string) : string option =
     match Environment.GetEnvironmentVariable name with
     | null -> None
     | x when String.IsNullOrWhiteSpace(x) -> None
     | value -> Some value
 
-  let private getEnvVarOrFail (name: string) : string =
-    getEnvVar name |> getOrFail (sprintf "Environment variable %s not set" name)
-
-  let private postgresConfig = {
-    Host = getEnvVarOrFail "POSTGRES_HOST"
-    Port = getEnvVarOrFail "POSTGRES_PORT" |> int
-    User = getEnvVarOrFail "POSTGRES_USER"
-    Password = getEnvVarOrFail "POSTGRES_PASSWORD"
-    Database = getEnvVarOrFail "POSTGRES_DATABASE"
+  let private postgresConfig: PostgresConfig = {
+    Host = getEnvVar "POSTGRES_HOST" |> getOrElse defaultConfig.Postgres.Host
+    Port = getEnvVar "POSTGRES_PORT" |> Option.map int |> getOrElse defaultConfig.Postgres.Port
+    User = getEnvVar "POSTGRES_USER" |> getOrElse defaultConfig.Postgres.User
+    Password = getEnvVar "POSTGRES_PASSWORD" |> getOrElse defaultConfig.Postgres.Password
+    Database = getEnvVar "POSTGRES_DATABASE" |> getOrElse defaultConfig.Postgres.Database
   }
 
-  let getUnsafe =
+  let get () : Config =
     try
       { Postgres = postgresConfig }
     with
