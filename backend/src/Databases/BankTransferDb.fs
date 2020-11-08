@@ -3,19 +3,10 @@ namespace Bank
 open Bank.BankAccountDb
 open Bank.Database
 open Npgsql.FSharp
-open System
 
 module BankTransferDb =
 
-  type BankTransferDb() =
-    static member Convert (read: RowReader) : BankTransfer =
-      { TransferId = read.int64 "transfer_id" |> TransferId
-        CreatedAt = read.dateTime "created_at" |> TransferCreatedAt
-        FromAccount = BankAccountDb.Convert(read, "from_")
-        ToAccount = BankAccountDb.Convert(read, "to_")
-        AmountEurCents = read.int64 "amount_eur_cents" |> TransferAmount }
-
-  let private selectSql = @"
+  let selectSql = @"
     select
       a.transfer_id,
       a.created_at,
@@ -44,49 +35,39 @@ module BankTransferDb =
     join bank_account d ON d.account_id = a.to_account_id
     join account_owner e ON e.owner_id = d.owner_id"
 
-  let getAll () : Result<BankTransfer list, exn> =
-    query selectSql [] BankTransferDb.Convert
+  type IBankTransferDb =
+    abstract GetAll: unit -> Result<BankTransfer list, exn>
+    abstract GetTransfer: Transaction -> TransferId -> Result<BankTransfer, exn>
+    abstract InsertTransfer: Transaction -> AccountId -> AccountId -> TransferAmount -> Result<TransferId, exn>
 
-  let getTransfer (tx: Transaction) (TransferId id) : Result<BankTransfer, exn> =
-    let sql = selectSql + " where a.transfer_id = @id"
-    rowTx tx sql ["@id", upcast id] BankTransferDb.Convert
+  type BankTransferDb () =
+    static member Convert (read: RowReader) : BankTransfer =
+      { TransferId = read.int64 "transfer_id" |> TransferId
+        CreatedAt = read.dateTime "created_at" |> TransferCreatedAt
+        FromAccount = BankAccountDb.Convert(read, "from_")
+        ToAccount = BankAccountDb.Convert(read, "to_")
+        AmountEurCents = read.int64 "amount_eur_cents" |> TransferAmount }
 
-  let private insertTransfer : Transaction -> AccountId -> AccountId -> TransferAmount -> Result<TransferId, exn> =
-    fun tx (AccountId fromId) (AccountId toId) (TransferAmount amount) ->
-      let sql = @"
-        insert into bank_transfer
-          (created_at, from_account_id, to_account_id, amount_eur_cents)
-        values
-          (now(), @fromId, @toId, @amount)
-        returning transfer_id"
+    interface IBankTransferDb with
+      member __.GetAll () : Result<BankTransfer list, exn> =
+        query selectSql [] BankTransferDb.Convert
 
-      let parms: list<string * obj> = [
-        "@fromId", upcast fromId
-        "@toId", upcast toId
-        "@amount", upcast amount
-      ]
+      member __.GetTransfer (tx: Transaction) (TransferId id) : Result<BankTransfer, exn> =
+        let sql = selectSql + " where a.transfer_id = @id"
+        rowTx tx sql ["@id", upcast id] BankTransferDb.Convert
 
-      rowTx tx sql parms (fun read -> read.int64 "transfer_id" |> TransferId)
+      member __.InsertTransfer (tx: Transaction) (AccountId fromId) (AccountId toId) (TransferAmount amount) : Result<TransferId, exn> =
+        let sql = @"
+          insert into bank_transfer
+            (created_at, from_account_id, to_account_id, amount_eur_cents)
+          values
+            (now(), @fromId, @toId, @amount)
+          returning transfer_id"
 
-  let makeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, TransferError> =
-    let txResult = inTransaction (fun tx ->
-      result {
-        let! balance =
-          getBalance tx fromId |> orFailWithCase DatabaseError
+        let parms: list<string * obj> = [
+          "@fromId", upcast fromId
+          "@toId", upcast toId
+          "@amount", upcast amount
+        ]
 
-        let (AccountBalance bal),
-            (TransferAmount amt) = balance, amount
-
-        do! (bal >= amt) |> isTrueOrFailWith InsufficientFunds
-
-        return!
-          decreaseBalance tx fromId amount
-          |> continueWith (fun _ -> increaseBalance tx toId amount)
-          |> continueWith (fun _ -> insertTransfer tx fromId toId amount)
-          |> continueWith (fun transferId -> getTransfer tx transferId)
-          |> orFailWithCase DatabaseError
-      }
-    )
-    match txResult with
-    | Ok result -> result
-    | Error ex -> Error <| DatabaseError ex.Message
+        rowTx tx sql parms (fun read -> read.int64 "transfer_id" |> TransferId)

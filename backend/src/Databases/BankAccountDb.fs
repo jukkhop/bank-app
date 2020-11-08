@@ -8,7 +8,14 @@ open System
 
 module BankAccountDb =
 
-  type BankAccountDb() =
+  type IBankAccountDb =
+    abstract AccountIdExists: int64 -> Result<bool, exn>
+    abstract DecreaseBalance: Transaction -> AccountId -> TransferAmount -> Result<unit, exn>
+    abstract GetAll: unit -> Result<BankAccount list, exn>
+    abstract GetBalance: Transaction -> AccountId -> Result<AccountBalance, exn>
+    abstract IncreaseBalance: Transaction -> AccountId -> TransferAmount -> Result<unit, exn>
+
+  type BankAccountDb () as this =
     static member Convert (read: RowReader, ?columnPrefix: string) : BankAccount =
       let prefix = defaultArg columnPrefix String.Empty
       let column colName = prefix + colName
@@ -17,42 +24,44 @@ module BankAccountDb =
         AccountNumber = read.text (column "account_number") |> mkAccountNumberOrFail
         BalanceEurCents = read.int64 (column "balance_eur_cents") |> AccountBalance }
 
-  let getAll () : Result<BankAccount list, exn> =
-    let sql = @"
-      select
-        a.account_id,
-        a.account_number,
-        a.balance_eur_cents,
-        o.owner_id,
-        o.first_name,
-        o.middle_name,
-        o.last_name,
-        o.nationality,
-        o.date_of_birth
-      from bank_account a
-      join account_owner o using (owner_id)"
+    interface IBankAccountDb with
+      member __.AccountIdExists (id: int64) : Result<bool, exn> =
+        let sql = "select exists (select 1 from bank_account where account_id = @id)"
+        row sql ["@id", upcast id] (fun read -> read.bool "exists")
 
-    query sql [] BankAccountDb.Convert
+      member __.DecreaseBalance (tx: Transaction) (id: AccountId) (TransferAmount amount) : Result<unit, exn> =
+        let me = this :> IBankAccountDb
+        me.IncreaseBalance tx id (amount * -1L |> TransferAmount)
 
-  let increaseBalance (tx: Transaction) (AccountId id) (TransferAmount amount) : Result<unit, exn> =
-    let sql = @"
-      update bank_account
-      set balance_eur_cents = balance_eur_cents + @amount
-      where account_id = @id"
+      member __.GetAll () : Result<BankAccount list, exn> =
+        let sql = @"
+          select
+            a.account_id,
+            a.account_number,
+            a.balance_eur_cents,
+            o.owner_id,
+            o.first_name,
+            o.middle_name,
+            o.last_name,
+            o.nationality,
+            o.date_of_birth
+          from bank_account a
+          join account_owner o using (owner_id)"
 
-    nonQueryTx tx sql [ "@amount", upcast amount
-                        "@id", upcast id ]
+        query sql [] BankAccountDb.Convert
 
-  let decreaseBalance (tx: Transaction) (id: AccountId) (TransferAmount amount) : Result<unit, exn> =
-    increaseBalance tx id (amount * -1L |> TransferAmount)
+      member __.GetBalance (tx: Transaction) (AccountId id) : Result<AccountBalance, exn> =
+        let sql = @"
+          select balance_eur_cents
+          from bank_account
+          where account_id = @id"
+        rowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
 
-  let getBalance (tx: Transaction) (AccountId id) : Result<AccountBalance, exn> =
-    let sql = @"
-      select balance_eur_cents
-      from bank_account
-      where account_id = @id"
-    rowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
+      member __.IncreaseBalance (tx: Transaction) (AccountId id) (TransferAmount amount) : Result<unit, exn> =
+        let sql = @"
+          update bank_account
+          set balance_eur_cents = balance_eur_cents + @amount
+          where account_id = @id"
 
-  let accountIdExists (id: int64) : Result<bool, exn> =
-    let sql = "select exists (select 1 from bank_account where account_id = @id)"
-    row sql ["@id", upcast id] (fun read -> read.bool "exists")
+        nonQueryTx tx sql [ "@amount", upcast amount
+                            "@id", upcast id ]

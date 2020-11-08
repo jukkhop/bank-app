@@ -9,6 +9,9 @@ open System
 
 module AccountOwnerDb =
 
+  type IAccountOwnerDb =
+    abstract GetAll: unit -> Result<AccountOwner list, exn>
+
   type AccountOwnerDb() =
     static member Convert (read: RowReader, ?columnPrefix: string) : AccountOwner =
       let prefix = defaultArg columnPrefix String.Empty
@@ -20,15 +23,16 @@ module AccountOwnerDb =
         Nationality = read.text (column "nationality") |> mkNationalityOrFail
         DateOfBirth = read.date (column "date_of_birth") |> mkDateTime }
 
-  let getAll () : Result<AccountOwner list, exn> =
-    let sql = @"
-      select
-        owner_id,
-        first_name,
-        middle_name,
-        last_name,
-        nationality,
-        date_of_birth
-      from account_owner"
+    interface IAccountOwnerDb with
+      member __.GetAll  () : Result<AccountOwner list, exn> =
+        let sql = @"
+          select
+            owner_id,
+            first_name,
+            middle_name,
+            last_name,
+            nationality,
+            date_of_birth
+          from account_owner"
 
-    query sql [] AccountOwnerDb.Convert
+        query sql [] AccountOwnerDb.Convert

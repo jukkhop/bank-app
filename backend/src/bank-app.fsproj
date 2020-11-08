@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>BankApp</AssemblyName>
+    <PackageId>bank-app</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="./Builders/ResultBuilder.fs" />
+    <Compile Include="./Types/Domain.fs" />
+    <Compile Include="./Types/Dto.fs" />
+    <Compile Include="./Types/Response.fs" />
+    <Compile Include="./Types/Validation.fs" />
+    <Compile Include="./Types/ValidDto.fs" />
+    <Compile Include="./Common/Json.fs" />
+    <Compile Include="./Common/LambdaJsonSerializer.fs" />
+    <Compile Include="./Common/Operators.fs" />
+    <Compile Include="./Common/Patterns.fs" />
+    <Compile Include="./Common/Utils.fs" />
+    <Compile Include="./Common/Config.fs" />
+    <Compile Include="./Utils/AccountNumberUtils.fs" />
+    <Compile Include="./Utils/DateTimeUtils.fs" />
+    <Compile Include="./Utils/HttpUtils.fs" />
+    <Compile Include="./Utils/NationalityUtils.fs" />
+    <Compile Include="./Utils/StringUtils.fs" />
+    <Compile Include="./Utils/TransferErrorUtils.fs" />
+    <Compile Include="./Databases/Database.fs" />
+    <Compile Include="./Databases/AccountOwnerDb.fs" />
+    <Compile Include="./Databases/BankAccountDb.fs" />
+    <Compile Include="./Databases/BankTransferDb.fs" />
+    <Compile Include="./Validations/Validation.fs" />
+    <Compile Include="./Validations/Validators.fs" />
+    <Compile Include="./Validations/CreateBankTransferValidation.fs" />
+    <Compile Include="./Services/TransferService.fs" />
+    <Compile Include="./Functions/CreateBankTransfer.fs" />
+    <Compile Include="./Functions/GetAccountOwners.fs" />
+    <Compile Include="./Functions/GetBankAccounts.fs" />
+    <Compile Include="./Functions/GetBankTransfers.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
+    <PackageReference Include="FSharp.Json" Version="0.4.0" />
+    <PackageReference Include="Npgsql" Version="4.1.4" />
+    <PackageReference Include="Npgsql.FSharp" Version="3.6.0" />
+  </ItemGroup>
+</Project>

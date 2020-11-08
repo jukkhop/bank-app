@@ -3,11 +3,11 @@ namespace Bank
 module Patterns =
 
   let (|SomeObj|_|) =
-    let ty = typedefof<option<_>>
+    let td = typedefof<option<_>>
     fun (a: obj) ->
-      let aty = a.GetType()
-      let v = aty.GetProperty("Value")
-      if aty.IsGenericType && aty.GetGenericTypeDefinition() = ty then
+      let t = a.GetType()
+      let value = t.GetProperty("Value")
+      if t.IsGenericType && t.GetGenericTypeDefinition() = td then
         if isNull a then None
-        else Some <| v.GetValue(a, [| |])
+        else Some <| value.GetValue(a, [| |])
       else None

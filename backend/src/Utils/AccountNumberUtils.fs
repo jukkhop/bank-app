@@ -5,7 +5,7 @@ open System
 
 module AccountNumberUtils =
 
-  let isValid (cand: string) =
+  let isValid (cand: string) : bool =
     let removeWhiteSpace = String.filter (Char.IsWhiteSpace >> not)
 
     let checkLength (str: string) =
