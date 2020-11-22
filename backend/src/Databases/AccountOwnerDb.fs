@@ -12,7 +12,7 @@ module AccountOwnerDb =
   type IAccountOwnerDb =
     abstract GetAll: unit -> Result<AccountOwner list, exn>
 
-  type AccountOwnerDb() =
+  type AccountOwnerDb (db: IDatabase) =
     static member Convert (read: RowReader, ?columnPrefix: string) : AccountOwner =
       let prefix = defaultArg columnPrefix String.Empty
       let column colName = prefix + colName
@@ -35,4 +35,4 @@ module AccountOwnerDb =
             date_of_birth
           from account_owner"
 
-        query sql [] AccountOwnerDb.Convert
+        db.Query sql [] AccountOwnerDb.Convert

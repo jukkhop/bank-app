@@ -15,19 +15,19 @@ module BankAccountDb =
     abstract GetBalance: Transaction -> AccountId -> Result<AccountBalance, exn>
     abstract IncreaseBalance: Transaction -> AccountId -> TransferAmount -> Result<unit, exn>
 
-  type BankAccountDb () as this =
+  type BankAccountDb (db: IDatabase) as this =
     static member Convert (read: RowReader, ?columnPrefix: string) : BankAccount =
       let prefix = defaultArg columnPrefix String.Empty
       let column colName = prefix + colName
       { AccountId = read.int64 (column "account_id") |> AccountId
         Owner = AccountOwnerDb.Convert(read, prefix)
-        AccountNumber = read.text (column "account_number") |> mkAccountNumberOrFail
+        AccountNumber = read.text (column "account_number") |> AccountNumber
         BalanceEurCents = read.int64 (column "balance_eur_cents") |> AccountBalance }
 
     interface IBankAccountDb with
       member __.AccountIdExists (id: int64) : Result<bool, exn> =
         let sql = "select exists (select 1 from bank_account where account_id = @id)"
-        row sql ["@id", upcast id] (fun read -> read.bool "exists")
+        db.Row sql ["@id", upcast id] (fun read -> read.bool "exists")
 
       member __.DecreaseBalance (tx: Transaction) (id: AccountId) (TransferAmount amount) : Result<unit, exn> =
         let me = this :> IBankAccountDb
@@ -48,14 +48,15 @@ module BankAccountDb =
           from bank_account a
           join account_owner o using (owner_id)"
 
-        query sql [] BankAccountDb.Convert
+        db.Query sql [] BankAccountDb.Convert
 
       member __.GetBalance (tx: Transaction) (AccountId id) : Result<AccountBalance, exn> =
         let sql = @"
           select balance_eur_cents
           from bank_account
           where account_id = @id"
-        rowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
+
+        db.RowTx tx sql ["@id", upcast id] (fun read -> read.int64 "balance_eur_cents" |> AccountBalance)
 
       member __.IncreaseBalance (tx: Transaction) (AccountId id) (TransferAmount amount) : Result<unit, exn> =
         let sql = @"
@@ -63,5 +64,5 @@ module BankAccountDb =
           set balance_eur_cents = balance_eur_cents + @amount
           where account_id = @id"
 
-        nonQueryTx tx sql [ "@amount", upcast amount
-                            "@id", upcast id ]
+        db.NonQueryTx tx sql [ "@amount", upcast amount
+                               "@id", upcast id ]

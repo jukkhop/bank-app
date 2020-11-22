@@ -6,6 +6,7 @@
     <PackageId>bank-app</PackageId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="./Builders/OptionBuilder.fs" />
     <Compile Include="./Builders/ResultBuilder.fs" />
     <Compile Include="./Types/Domain.fs" />
     <Compile Include="./Types/Dto.fs" />
@@ -32,6 +33,7 @@
     <Compile Include="./Validations/Validators.fs" />
     <Compile Include="./Validations/CreateBankTransferValidation.fs" />
     <Compile Include="./Services/TransferService.fs" />
+    <Compile Include="./Common/Context.fs" />
     <Compile Include="./Functions/CreateBankTransfer.fs" />
     <Compile Include="./Functions/GetAccountOwners.fs" />
     <Compile Include="./Functions/GetBankAccounts.fs" />

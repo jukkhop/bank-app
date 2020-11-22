@@ -1,8 +1,7 @@
 namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
-open Bank.BankAccountDb
-open Bank.BankTransferDb
+open Bank.Context
 open Bank.CreateBankTransferValidation
 open Bank.HttpUtils
 open Bank.TransferErrorUtils
@@ -30,7 +29,6 @@ module CreateBankTransfer =
     } |> either
 
   let handler (request: APIGatewayProxyRequest) : APIGatewayProxyResponse =
-    let accountDb = BankAccountDb ()
-    let transferDb = BankTransferDb ()
-    let service = TransferService (accountDb, transferDb)
+    let context = Context (Config.get())
+    let service = TransferService (context.Db, context.AccountDb, context.TransferDb)
     impl request (service :> ITransferService)

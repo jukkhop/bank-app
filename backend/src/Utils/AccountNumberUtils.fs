@@ -26,8 +26,3 @@ module AccountNumberUtils =
          |> checkLength
          |> Option.map (moveFourCharsToEnd >> digitize >> checkModulus)
          |> getOrElse false
-
-  let mkAccountNumberOrFail str =
-    if isValid str
-      then AccountNumber str
-      else failwith <| sprintf "Invalid account number: %s" str

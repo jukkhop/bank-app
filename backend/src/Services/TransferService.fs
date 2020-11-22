@@ -11,13 +11,13 @@ module TransferService =
     abstract TransferDb: IBankTransferDb
     abstract MakeTransfer: AccountId -> AccountId -> TransferAmount -> Result<BankTransfer, TransferError>
 
-  type TransferService (accountDb: IBankAccountDb, transferDb: IBankTransferDb) =
+  type TransferService (db: IDatabase, accountDb: IBankAccountDb, transferDb: IBankTransferDb) =
     interface ITransferService with
       member __.AccountDb = accountDb
       member __.TransferDb = transferDb
 
       member __.MakeTransfer (fromId: AccountId) (toId: AccountId) (amount: TransferAmount) : Result<BankTransfer, TransferError> =
-        let txResult = inTransaction (fun tx ->
+        let txResult = db.InTransaction (fun tx ->
           result {
             let! balance =
               accountDb.GetBalance tx fromId |> orFailWithCase DatabaseError
@@ -37,4 +37,4 @@ module TransferService =
         )
         match txResult with
         | Ok result -> result
-        | Error ex -> Error <| DatabaseError ex.Message
+        | Error ex -> Error (DatabaseError ex.Message)

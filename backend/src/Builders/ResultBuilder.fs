@@ -13,7 +13,7 @@ type ResultBuilder () =
 [<AutoOpen>]
 module ResultBuilder =
 
-  let result = ResultBuilder()
+  let result = ResultBuilder ()
 
   let either (value: Result<'a, 'a>) : 'a =
     match value with

@@ -2,6 +2,7 @@ namespace Bank
 
 open Amazon.Lambda.APIGatewayEvents
 open Bank.AccountOwnerDb
+open Bank.Context
 open Bank.HttpUtils
 
 module GetAccountOwners =
@@ -12,5 +13,5 @@ module GetAccountOwners =
     | Error ex -> genericErrorResponse HttpStatus.InternalError ex.Message
 
   let handler (request: APIGatewayProxyRequest) : APIGatewayProxyResponse =
-    let db = AccountOwnerDb()
-    impl request (db :> IAccountOwnerDb)
+    let context = Context (Config.get())
+    impl request context.OwnerDb

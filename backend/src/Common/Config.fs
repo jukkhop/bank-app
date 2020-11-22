@@ -17,7 +17,7 @@ module Config =
     Postgres: PostgresConfig
   }
 
-  let defaultConfig = {
+  let defaultConfig: Config = {
     Postgres = {
       Host = "localhost"
       Port = 5434
@@ -33,7 +33,7 @@ module Config =
     | x when String.IsNullOrWhiteSpace(x) -> None
     | value -> Some value
 
-  let private postgresConfig = {
+  let private postgresConfig: PostgresConfig = {
     Host = getEnvVar "POSTGRES_HOST" |> getOrElse defaultConfig.Postgres.Host
     Port = getEnvVar "POSTGRES_PORT" |> Option.map int |> getOrElse defaultConfig.Postgres.Port
     User = getEnvVar "POSTGRES_USER" |> getOrElse defaultConfig.Postgres.User
@@ -41,7 +41,7 @@ module Config =
     Database = getEnvVar "POSTGRES_DATABASE" |> getOrElse defaultConfig.Postgres.Database
   }
 
-  let getUnsafe =
+  let get () : Config =
     try
       { Postgres = postgresConfig }
     with
