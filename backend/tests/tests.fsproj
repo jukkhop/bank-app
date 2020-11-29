@@ -5,8 +5,12 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Fixtures/TestData.fs" />
-    <Compile Include="Fixtures/TestUtils.fs" />
+    <Compile Include="Testing/TestData.fs" />
+    <Compile Include="Testing/TestDbUtils.fs" />
+    <Compile Include="Functions/CreateBankTransferSpec.fs" />
+    <Compile Include="Functions/GetAccountOwnersSpec.fs" />
+    <Compile Include="Functions/GetBankAccountsSpec.fs" />
+    <Compile Include="Functions/GetBankTransfersSpec.fs" />
     <Compile Include="Services/TransferServiceSpec.fs" />
     <Compile Include="Validations/CreateBankTransferValidationSpec.fs" />
     <Compile Include="Program.fs" />

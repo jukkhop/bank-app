@@ -5,9 +5,9 @@ open Bank.Database
 open Bank.TestData
 open Bank.Utils
 
-module TestUtils =
+module TestDbUtils =
 
-  type TestUtils (db: IDatabase) as this =
+  type TestDbUtils (db: IDatabase) as this =
 
     member __.InsertOwner (owner: AccountOwner) : unit =
       let sql = @"
@@ -103,7 +103,8 @@ module TestUtils =
       | Error ex -> failwith (ex.Message)
 
     member __.Truncate (tables: string list) : unit =
-      do db.NonQuery ("truncate " + (String.concat ", " tables)) [] |> ignore
+      let sql = "truncate " + (String.concat ", " tables)
+      do db.NonQuery sql [] |> ignore
 
     member __.CleanAllData() : unit =
       let tables =

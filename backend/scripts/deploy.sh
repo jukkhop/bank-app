@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/../"
 
 [ -z "${1-}" ] && (
   echo "Usage: $0 [env]"

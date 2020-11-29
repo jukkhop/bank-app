@@ -6,7 +6,7 @@ open Bank.Config
 open Bank.Context
 open Bank.Database
 open Bank.TestData
-open Bank.TestUtils
+open Bank.TestDbUtils
 open Bank.TransferService
 open Foq
 open FsUnit.Xunit
@@ -21,7 +21,7 @@ module TransferServiceSpec =
   let private db = context.Db
   let private accountDb = context.AccountDb
   let private transferDb = context.TransferDb
-  let private utils = TestUtils (context.Db)
+  let private utils = TestDbUtils (context.Db)
 
   let private setupDb () : unit =
     do utils.CleanAllData()
@@ -29,7 +29,7 @@ module TransferServiceSpec =
     do utils.InitAccountData()
 
   let private setupDbMock () : IDatabase * DbTransaction =
-    let tx = (new Mock<DbTransaction>()).Create()
+    let tx = Mock<DbTransaction>().Create()
 
     let db =
       Mock<IDatabase>()
@@ -39,17 +39,22 @@ module TransferServiceSpec =
 
     (db, tx)
 
+  let private getOkOrFail (res: Result<'a, 'b>) =
+    match res with
+    | Ok x -> x
+    | Error _ -> failwith "got an Error, expected Ok"
+
+  let private getErrorOrFail (res: Result<'a, 'b>) =
+    match res with
+    | Ok _ -> failwith "got an Ok, expected Error"
+    | Error err -> err
+
   [<Fact>]
   let ``transfer funds from one account to another`` () =
     do setupDb()
 
     let service = TransferService(db, accountDb, transferDb) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
-
-    let returnedTransfer =
-      match result with
-      | Ok x -> x
-      | Error ex -> failwith (ex.ToString())
+    let returnedTransfer = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getOkOrFail
 
     do utils.GetBalance accountId1 |> should equal (AccountBalance (account1BalanceInt - transfer1AmountInt))
     do utils.GetBalance accountId2 |> should equal (AccountBalance (account2BalanceInt + transfer1AmountInt))
@@ -85,8 +90,7 @@ module TransferServiceSpec =
     )
 
     let service = TransferService (dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
-    let returnedTransfer = match result with | Ok x -> x | Error _ -> failwith "got an unexpected result"
+    let returnedTransfer = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getOkOrFail
 
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
     do Mock.Verify (<@ accountDbMock.DecreaseBalance txMock accountId1 transfer1Amount @>, once)
@@ -105,10 +109,9 @@ module TransferServiceSpec =
     )
 
     let service = TransferService (db, accountDb, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
-    let returnedError = match result with | Ok _ -> failwith "got an unexpected result" | Error x -> x
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    do returnedError |> should equal (DatabaseError "some error")
+    do error |> should equal (DatabaseError "some error")
     do utils.GetBalance accountId1 |> should equal account1Balance
     do utils.GetBalance accountId2 |> should equal account2Balance
     do Mock.Verify (<@ transferDbMock.InsertTransfer (any()) (any()) (any()) (any()) @>, once)
@@ -123,12 +126,9 @@ module TransferServiceSpec =
 
     let transferDbMock = Mock<IBankTransferDb>().Create()
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal (DatabaseError "some error")
-
+    do error |> should equal (DatabaseError "some error")
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
 
   [<Fact>]
@@ -141,12 +141,9 @@ module TransferServiceSpec =
 
     let transferDbMock = Mock<IBankTransferDb>().Create()
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal InsufficientFunds
-
+    do error |> should equal InsufficientFunds
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
 
   [<Fact>]
@@ -162,11 +159,9 @@ module TransferServiceSpec =
 
     let transferDbMock = Mock<IBankTransferDb>().Create()
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal (DatabaseError "some error")
+    do error |> should equal (DatabaseError "some error")
 
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
     do Mock.Verify (<@ accountDbMock.DecreaseBalance txMock accountId1 transfer1Amount @>, once)
@@ -185,11 +180,9 @@ module TransferServiceSpec =
 
     let transferDbMock = Mock<IBankTransferDb>().Create()
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal (DatabaseError "some error")
+    do error |> should equal (DatabaseError "some error")
 
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
     do Mock.Verify (<@ accountDbMock.DecreaseBalance txMock accountId1 transfer1Amount @>, once)
@@ -214,11 +207,9 @@ module TransferServiceSpec =
     )
 
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal (DatabaseError "some error")
+    do error |> should equal (DatabaseError "some error")
 
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
     do Mock.Verify (<@ accountDbMock.DecreaseBalance txMock accountId1 transfer1Amount @>, once)
@@ -245,11 +236,9 @@ module TransferServiceSpec =
     )
 
     let service = TransferService(dbMock, accountDbMock, transferDbMock) :> ITransferService
-    let result = service.MakeTransfer accountId1 accountId2 transfer1Amount
+    let error = service.MakeTransfer accountId1 accountId2 transfer1Amount |> getErrorOrFail
 
-    match result with
-    | Ok _ -> failwith "got an unexpected result"
-    | Error err -> err |> should equal (DatabaseError "some error")
+    do error |> should equal (DatabaseError "some error")
 
     do Mock.Verify (<@ accountDbMock.GetBalance txMock accountId1 @>, once)
     do Mock.Verify (<@ accountDbMock.DecreaseBalance txMock accountId1 transfer1Amount @>, once)

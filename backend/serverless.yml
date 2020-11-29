@@ -13,7 +13,7 @@ provider:
     POSTGRES_DATABASE: ${opt:postgres-database}
 
 package:
-  artifact: bin/Release/netcoreapp3.1/deploy-package.zip
+  artifact: src/bin/Release/netcoreapp3.1/bank-app.zip
 
 functions:
   create-bank-transfer:

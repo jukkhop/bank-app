@@ -5,17 +5,15 @@ open System
 
 module Config =
 
-  type PostgresConfig = {
-    Host: string
-    Port: int
-    User: string
-    Password: string
-    Database: string
-  }
+  type PostgresConfig =
+    { Host: string
+      Port: int
+      User: string
+      Password: string
+      Database: string }
 
-  type Config = {
-    Postgres: PostgresConfig
-  }
+  type Config =
+    { Postgres: PostgresConfig }
 
   let defaultConfig: Config = {
     Postgres = {
@@ -42,7 +40,5 @@ module Config =
   }
 
   let get () : Config =
-    try
-      { Postgres = postgresConfig }
-    with
-    | ex -> raise ex
+    try { Postgres = postgresConfig }
+    with | ex -> raise ex

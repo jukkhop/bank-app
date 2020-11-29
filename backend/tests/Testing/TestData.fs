@@ -25,7 +25,7 @@ module TestData =
     MiddleName = Some <| MiddleName (String50 "Middle name")
     LastName = LastName (String50 "Last name")
     Nationality = Austria
-    DateOfBirth = DateTime.Now
+    DateOfBirth = DateTime.Now.Date
   }
 
   let owner2: AccountOwner = {
@@ -34,7 +34,7 @@ module TestData =
     MiddleName = Some <| MiddleName (String50 "Middle name")
     LastName = LastName (String50 "Last name")
     Nationality = Sweden
-    DateOfBirth = DateTime.Now
+    DateOfBirth = DateTime.Now.Date
   }
 
   let account1: BankAccount = {

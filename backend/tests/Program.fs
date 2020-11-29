@@ -1,5 +1,10 @@
 namespace Bank.Tests
 
+open Xunit
+
+[<assembly:CollectionBehavior(DisableTestParallelization = true)>]
+do ()
+
 module Program =
 
   [<EntryPoint>]

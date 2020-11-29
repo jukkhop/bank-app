@@ -5,4 +5,5 @@ open System
 module DateTimeUtils =
 
   let mkDateTime (date: NpgsqlTypes.NpgsqlDate) =
-    DateTime(date.Year, date.Month, date.Day)
+    date.AddDays(1) |> fun dt -> DateTime (dt.Year, dt.Month, dt.Day)
+

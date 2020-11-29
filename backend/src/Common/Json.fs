@@ -11,7 +11,5 @@ module Json =
     Json.serializeEx config obj
 
   let deserialize<'a> (json: string) : Result<'a, exn> =
-    try
-      Ok <| Json.deserializeEx<'a> config json
-    with
-    | ex -> Error ex
+    try Ok <| Json.deserializeEx<'a> config json
+    with | ex -> Error ex
