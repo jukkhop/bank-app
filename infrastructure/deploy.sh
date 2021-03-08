@@ -9,17 +9,19 @@ cd "$(dirname "$0")"
   exit 128
 )
 
-ENV="${1}"
+env="${1}"
 
 set -o allexport
 
-source "../environment/${ENV}-secrets.env"
-source "../environment/${ENV}-variables.env"
+source "../environment/${env}-secrets.env"
+source "../environment/${env}-variables.env"
 
 set +o allexport
 
 terraform init \
   -backend-config="access_key=${TF_VAR_aws_access_key}" \
   -backend-config="secret_key=${TF_VAR_aws_secret_key}"
+
+terraform workspace select ${env} || terraform workspace new ${env}
 
 terraform apply

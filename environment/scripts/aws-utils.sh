@@ -12,3 +12,13 @@ function get_rds_endpoint_address {
 
   echo "$DB_HOST"
 }
+
+function get_cloudfront_distribution_id {
+  local DISTRIBUTION_ID="$( \
+    aws cloudfront list-distributions \
+    --query 'DistributionList.Items[*].{id:Id,origin:Origins.Items[0].Id}[?origin=='"'"${1}"'"'].id' \
+    --output text \
+  )"
+
+  echo "$DISTRIBUTION_ID"
+}

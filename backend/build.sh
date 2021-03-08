@@ -2,10 +2,10 @@
 
 set -euo pipefail
 
-cd "$(dirname "$0")/../src"
+cd "$(dirname "$0")/src"
 
 dotnet restore
-dotnet tool install -g Amazon.Lambda.Tools --framework netcoreapp3.1
+# dotnet tool install -g Amazon.Lambda.Tools --framework netcoreapp3.1
 
 dotnet lambda package \
   --configuration Release \
