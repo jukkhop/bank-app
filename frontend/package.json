@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "sh -ac '. .env.${ENV}; react-scripts build'",
+    "format": "prettier \"src/**/*.{ts,tsx}\" --write",
+    "lint": "eslint src --ext .ts,.tsx",
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
