@@ -1,5 +1,5 @@
 import { Observable, Subject, BehaviorSubject, merge, timer } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { delay, map, switchMap } from 'rxjs/operators'
 
 import { sourceSubjects } from './sources'
 import { CreateTransferRequest, Methods } from '../types'
@@ -106,8 +106,9 @@ action$.subscribe((action: Action<unknown>) => {
     }
   }
 
-  sourceSubjects.createTransfer.subscribe(() => {
+  sourceSubjects.createTransfer.pipe(delay(1000)).subscribe(() => {
     subjects.getTransfers.next(null as never)
+    subjects.getAccounts.next(null as never)
   })
 })
 
