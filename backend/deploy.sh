@@ -23,7 +23,7 @@ export AWS_SECRET_ACCESS_KEY="${TF_VAR_aws_secret_key}"
 
 source "../environment/scripts/aws-utils.sh"
 
-db_host="$(get_rds_endpoint_address ${env})"
+db_host="$(get_rds_endpoint_address bank-app-${env}-db)"
 
 serverless deploy \
   --region ${TF_VAR_aws_region} \

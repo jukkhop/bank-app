@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = "${var.dns_name}"
+  bucket = var.dns_name
   acl    = "public-read"
 
   policy = <<POLICY
@@ -22,7 +22,7 @@ POLICY
 }
 
 resource "aws_cloudfront_distribution" "distribution" {
-  aliases             = ["${var.dns_name}"]
+  aliases             = [var.dns_name]
   enabled             = true
   default_root_object = "index.html"
 
@@ -34,8 +34,8 @@ resource "aws_cloudfront_distribution" "distribution" {
       origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
 
-    domain_name = "${aws_s3_bucket.bucket.website_endpoint}"
-    origin_id   = "${var.dns_name}"
+    domain_name = aws_s3_bucket.bucket.website_endpoint
+    origin_id   = var.dns_name
   }
 
   default_cache_behavior {
@@ -43,7 +43,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     compress               = true
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "${var.dns_name}"
+    target_origin_id       = var.dns_name
     min_ttl                = 0
     default_ttl            = 86400
     max_ttl                = 31536000
@@ -71,19 +71,19 @@ resource "aws_cloudfront_distribution" "distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = "${var.certificate_arn}"
+    acm_certificate_arn = var.certificate_arn
     ssl_support_method  = "sni-only"
   }
 }
 
 resource "aws_route53_record" "dns_record" {
-  zone_id = "${var.dns_zone_id}"
-  name    = "${var.dns_name}"
+  zone_id = var.dns_zone_id
+  name    = var.dns_name
   type    = "A"
 
-  alias = {
-    name                   = "${aws_cloudfront_distribution.distribution.domain_name}"
-    zone_id                = "${aws_cloudfront_distribution.distribution.hosted_zone_id}"
+  alias {
+    name                   = aws_cloudfront_distribution.distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }

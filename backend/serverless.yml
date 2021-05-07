@@ -11,6 +11,8 @@ provider:
     POSTGRES_USER: ${opt:postgres-user}
     POSTGRES_PASSWORD: ${opt:postgres-password}
     POSTGRES_DATABASE: ${opt:postgres-database}
+  apiGateway:
+    shouldStartNameWithService: true
 
 package:
   artifact: src/bin/Release/netcoreapp3.1/bank-app.zip

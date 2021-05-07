@@ -1,4 +1,4 @@
-variable "database_name" {}
+variable "database" {}
 variable "name" {}
 variable "password" {}
 variable "port" {}
@@ -13,7 +13,7 @@ variable "engine_name" {
 }
 
 variable "engine_version" {
-  default = "12.3"
+  default = "12.5"
 }
 
 variable "family" {
@@ -21,5 +21,5 @@ variable "family" {
 }
 
 variable "instance_class" {
-   default = "db.t2.micro"
+  default = "db.t2.micro"
 }
