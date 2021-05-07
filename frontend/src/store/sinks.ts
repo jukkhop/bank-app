@@ -106,9 +106,11 @@ action$.subscribe((action: Action<unknown>) => {
     }
   }
 
-  sourceSubjects.createTransfer.pipe(delay(1000)).subscribe(() => {
-    subjects.getTransfers.next(null as never)
-    subjects.getAccounts.next(null as never)
+  sourceSubjects.createTransfer.pipe(delay(1000)).subscribe((resp) => {
+    if (!resp.loading && !resp.error) {
+      subjects.getTransfers.next(null as never)
+      subjects.getAccounts.next(null as never)
+    }
   })
 })
 
