@@ -1,7 +1,7 @@
 namespace Bank
 
 open Amazon.Lambda.Core
-open Amazon.Lambda.Serialization.Json
+open Amazon.Lambda.Serialization.SystemTextJson
 
-[<assembly:LambdaSerializer(typeof<JsonSerializer>)>]
+[<assembly:LambdaSerializer(typeof<DefaultLambdaJsonSerializer>)>]
 do ()
