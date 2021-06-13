@@ -20,16 +20,8 @@ set +o allexport
 
 export AWS_ACCESS_KEY_ID="${TF_VAR_aws_access_key}"
 export AWS_SECRET_ACCESS_KEY="${TF_VAR_aws_secret_key}"
+export AWS_DEFAULT_REGION="${TF_VAR_aws_region}"
 
 source "../environment/scripts/aws-utils.sh"
 
-bucket_name="${TF_VAR_frontend_dns_name}"
-distribution_id="$(get_cloudfront_distribution_id ${bucket_name})"
-
-s3deploy \
-  -source=build/ \
-  -region=${TF_VAR_aws_region} \
-  -key=${TF_VAR_aws_access_key} \
-  -secret=${TF_VAR_aws_secret_key} \
-  -distribution-id=${distribution_id} \
-  -bucket=${bucket_name}
+aws s3 sync build/ "s3://${TF_VAR_frontend_dns_name}"

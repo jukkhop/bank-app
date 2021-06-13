@@ -77,10 +77,16 @@ Environment-specific variables and secrets are kept in the `environment` folder.
 
 #### Manual deployment (frontend)
 
-- Install [s3deploy](https://github.com/bep/s3deploy)
+- Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 - Change directory `cd frontend`
 - Build `./build.sh <env>`
 - Deploy `./deploy.sh <env>`
+
+#### Run database migrations
+
+- Install [Flyway CLI](https://flywaydb.org/documentation/usage/commandline/)
+- Change directory `cd database`
+- Execute `./run-migrations.sh <env>`
 
 #### Automated deployment
 

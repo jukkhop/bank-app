@@ -26,11 +26,11 @@ source "../environment/scripts/aws-utils.sh"
 db_host="$(get_rds_endpoint_address bank-app-${env}-db)"
 
 serverless deploy \
-  --region ${TF_VAR_aws_region} \
-  --stage ${TF_VAR_environment} \
+  --postgres-database ${TF_VAR_db_database} \
   --postgres-host ${db_host} \
+  --postgres-password ${TF_VAR_db_password} \
   --postgres-port ${TF_VAR_db_port} \
   --postgres-user ${TF_VAR_db_user} \
-  --postgres-password ${TF_VAR_db_password} \
-  --postgres-database ${TF_VAR_db_database} \
+  --region ${TF_VAR_aws_region} \
+  --stage ${TF_VAR_environment} \
   --verbose
