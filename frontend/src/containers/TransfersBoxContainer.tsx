@@ -1,11 +1,11 @@
 import React from 'react'
-import TransfersBox from '../../components/TransfersBox'
-import { useObservable } from '../../hooks'
-import { initials, sinks, sources } from '../../store'
+import TransfersBox from '../components/Transfers/TransfersBox'
+import { useObservable } from '../hooks'
+import { initials, sinks, sources } from '../store'
 
 function TransfersBoxContainer(): JSX.Element {
   const data = useObservable(sources.getTransfers, initials.getTransfers)
-  const { transfers = [], loading = false, error = false, message = null } = data || {}
+  const { transfers = [], loading = false, error = false, message } = data || {}
 
   return (
     <TransfersBox

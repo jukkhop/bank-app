@@ -1,16 +1,18 @@
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
-import { toEuros } from '../../../converters'
-import { BankAccount } from '../../../types'
+import { toEuros } from '../../converters'
+import { BankAccount } from '../../types'
 
 type Props = {
   accounts: BankAccount[]
   loading: boolean
   error: boolean
-  message: string | null
+  message: string | undefined
 }
 
-function AccountsList({ accounts, loading, error, message = null }: Props): JSX.Element {
+function AccountsList(props: Props): JSX.Element {
+  const { accounts, loading, error, message } = props
+
   if (loading) {
     return <Progress color='primary' size='small' />
   }

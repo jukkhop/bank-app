@@ -1,29 +1,31 @@
+import cls from 'classnames'
 import React from 'react'
 import { Box, Button, Heading, Level } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
-import OwnersList from './OwnersList'
-import { AccountOwner } from '../../types'
+import AccountsList from './AccountsList'
+import { BankAccount } from '../../types'
 
 const { Item, Side } = Level
 
 type Props = {
-  owners: AccountOwner[]
+  accounts: BankAccount[]
   loading: boolean
   error: boolean
-  message: string | null
+  message: string | undefined
   onRefresh: () => void
 }
 
-function OwnersBox({ owners, loading, error, message = null, onRefresh }: Props): JSX.Element {
-  const faIconClass = loading ? 'fa-spin' : ''
+function AccountsBox(props: Props): JSX.Element {
+  const { accounts, loading, error, message, onRefresh } = props
+  const faIconClass = cls({ 'fa-spin': loading })
   return (
     <Box>
       <Level mobile>
         <Side align='left'>
           <Heading subtitle size={4} className='has-text-weight-light'>
-            Account owners
+            Bank accounts
           </Heading>
         </Side>
         <Side align='right'>
@@ -44,9 +46,9 @@ function OwnersBox({ owners, loading, error, message = null, onRefresh }: Props)
           </Item>
         </Side>
       </Level>
-      <OwnersList owners={owners} loading={loading} error={error} message={message} />
+      <AccountsList accounts={accounts} loading={loading} error={error} message={message} />
     </Box>
   )
 }
 
-export default OwnersBox
+export default AccountsBox

@@ -2,8 +2,8 @@ import React from 'react'
 import { Container, Columns } from 'react-bulma-components'
 import 'bulma/css/bulma.min.css'
 
+import CreateTransferBox from './Transfers/CreateTransferBox'
 import AccountsBoxContainer from '../containers/AccountsBoxContainer'
-import CreateTransferBox from './CreateTransferBox'
 import OwnersBoxContainer from '../containers/OwnersBoxContainer'
 import TransfersBoxContainer from '../containers/TransfersBoxContainer'
 

@@ -1,11 +1,11 @@
 import React from 'react'
-import AccountsBox from '../../components/AccountsBox'
-import { useObservable } from '../../hooks'
-import { initials, sinks, sources } from '../../store'
+import AccountsBox from '../components/Accounts/AccountsBox'
+import { useObservable } from '../hooks'
+import { initials, sinks, sources } from '../store'
 
 function AccountsBoxContainer(): JSX.Element {
   const data = useObservable(sources.getAccounts, initials.getAccounts)
-  const { accounts = [], loading = false, error = false, message = null } = data || {}
+  const { accounts = [], loading = false, error = false, message } = data || {}
 
   return (
     <AccountsBox

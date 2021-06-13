@@ -4,10 +4,10 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { takeWhile } from 'rxjs/operators'
 
-import CreateTransferForm from '../../components/CreateTransferBox/CreateTransferForm'
-import { useObservable } from '../../hooks'
-import { initials, sinks, sources } from '../../store'
-import { CreateTransferRequest, GetAccountsResponse } from '../../types'
+import CreateTransferForm from '../components/Transfers/CreateTransferForm'
+import { useObservable } from '../hooks'
+import { initials, sinks, sources } from '../store'
+import { CreateTransferRequest, GetAccountsResponse } from '../types'
 
 const initialAccounts$ = sources.getAccounts.pipe(
   takeWhile((x: GetAccountsResponse) => x.loading, true),

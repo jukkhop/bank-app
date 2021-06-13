@@ -1,3 +1,4 @@
+import cls from 'classnames'
 import React from 'react'
 import { Box, Button, Heading, Level } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,18 +13,13 @@ type Props = {
   transfers: BankTransfer[]
   loading: boolean
   error: boolean
-  message: string | null
+  message: string | undefined
   onRefresh: () => void
 }
 
-function TransfersBox({
-  transfers,
-  loading,
-  error,
-  message = null,
-  onRefresh,
-}: Props): JSX.Element {
-  const faIconClass = loading ? 'fa-spin' : ''
+function TransfersBox(props: Props): JSX.Element {
+  const { transfers, loading, error, message, onRefresh } = props
+  const faIconClass = cls({ 'fa-spin': loading })
   return (
     <Box>
       <Level mobile>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Heading } from 'react-bulma-components'
-import CreateTransferForm from '../../containers/CreateTransferFormContainer'
+import CreateTransferFormContainer from '../../containers/CreateTransferFormContainer'
 
 function CreateTransferBox(): JSX.Element {
   return (
@@ -8,7 +8,7 @@ function CreateTransferBox(): JSX.Element {
       <Heading subtitle size={4} className='has-text-weight-light'>
         Make a transfer
       </Heading>
-      <CreateTransferForm />
+      <CreateTransferFormContainer />
     </Box>
   )
 }

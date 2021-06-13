@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
+import cls from 'classnames'
 import React from 'react'
 import { Columns, Button } from 'react-bulma-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,7 +10,7 @@ import {
   faExclamationTriangle,
   faMoneyCheckAlt,
 } from '@fortawesome/free-solid-svg-icons'
-import { BankAccount } from '../../../types'
+import { BankAccount } from '../../types'
 
 const { Column } = Columns
 
@@ -34,12 +35,11 @@ function CreateTransferForm({
   register,
   transferLoading,
 }: CreateTransferProps): JSX.Element {
-  // prettier-ignore
-  const accountSpanClass =
-    `select ${accountsLoading ? 'is-loading' : ''} ${accountsError ? 'is-danger' : ''}`
-  const amountControlClass = formErrors.amount ? 'has-icons-right' : ''
-  const amountInputClass = formErrors.amount ? 'is-danger' : ''
-  const submitButtonClass = transferLoading ? 'is-loading' : ''
+  const accountSpanClass = cls({ 'is-loading': accountsLoading, 'is-danger': accountsError })
+  const amountControlClass = cls({ 'has-icons-right': formErrors.amount !== undefined })
+  const amountInputClass = cls({ 'is-danger': formErrors.amount !== undefined })
+  const submitButtonClass = cls({ 'is-loading': transferLoading })
+
   return (
     <form onSubmit={onCreateTransfer}>
       <Columns>

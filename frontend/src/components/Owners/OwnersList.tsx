@@ -1,16 +1,18 @@
 import React from 'react'
 import { Progress, Table } from 'react-bulma-components'
-import { fullName } from '../../../converters'
-import { AccountOwner } from '../../../types'
+import { fullName } from '../../converters'
+import { AccountOwner } from '../../types'
 
 type Props = {
   owners: AccountOwner[]
   loading: boolean
   error: boolean
-  message: string | null
+  message: string | undefined
 }
 
-function OwnersList({ owners, loading, error, message = null }: Props): JSX.Element {
+function OwnersList(props: Props): JSX.Element {
+  const { owners, loading, error, message } = props
+
   if (loading) {
     return <Progress color='primary' size='small' />
   }
@@ -24,12 +26,14 @@ function OwnersList({ owners, loading, error, message = null }: Props): JSX.Elem
       <thead>
         <tr>
           <th>Name</th>
+          <th>Nationality</th>
         </tr>
       </thead>
       <tbody>
         {owners.map((owner) => (
           <tr key={owner.ownerId}>
             <td>{fullName(owner)}</td>
+            <td>{owner.nationality}</td>
           </tr>
         ))}
       </tbody>
