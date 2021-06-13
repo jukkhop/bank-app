@@ -26,19 +26,22 @@ type CreateTransferProps = {
   transferLoading: boolean
 }
 
-function CreateTransferForm({
-  accounts = [],
-  accountsError,
-  accountsLoading,
-  formErrors,
-  onCreateTransfer,
-  register,
-  transferLoading,
-}: CreateTransferProps): JSX.Element {
+function CreateTransferForm(props: CreateTransferProps): JSX.Element {
+  const {
+    accounts,
+    accountsError,
+    accountsLoading,
+    formErrors,
+    onCreateTransfer,
+    register,
+    transferLoading,
+  } = props
+
   const accountSpanClass = cls('select', {
     'is-loading': accountsLoading,
     'is-danger': accountsError,
   })
+
   const amountControlClass = cls({ 'has-icons-right': formErrors.amount !== undefined })
   const amountInputClass = cls({ 'is-danger': formErrors.amount !== undefined })
   const submitButtonClass = cls({ 'is-loading': transferLoading })
