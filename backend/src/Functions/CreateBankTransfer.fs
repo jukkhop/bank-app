@@ -16,7 +16,8 @@ module CreateBankTransfer =
         |> Json.deserialize<CreateBankTransferDto>
         |> orFailWith parseErrorResponse
 
-      let! validData = validate service.AccountDb data |> orFailWith validationErrorResponse
+      let! validData =
+        validate service.AccountDb data |> orFailWith validationErrorResponse
 
       let transferResult =
         service.MakeTransfer validData.FromAccountId validData.ToAccountId validData.AmountEurCents
