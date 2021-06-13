@@ -35,7 +35,10 @@ function CreateTransferForm({
   register,
   transferLoading,
 }: CreateTransferProps): JSX.Element {
-  const accountSpanClass = cls({ 'is-loading': accountsLoading, 'is-danger': accountsError })
+  const accountSpanClass = cls('select', {
+    'is-loading': accountsLoading,
+    'is-danger': accountsError,
+  })
   const amountControlClass = cls({ 'has-icons-right': formErrors.amount !== undefined })
   const amountInputClass = cls({ 'is-danger': formErrors.amount !== undefined })
   const submitButtonClass = cls({ 'is-loading': transferLoading })
