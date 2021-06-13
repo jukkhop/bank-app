@@ -1,5 +1,3 @@
-\c bank_db
-
 create table account_owner(
   "owner_id" bigserial primary key,
   "first_name" varchar(255) not null,

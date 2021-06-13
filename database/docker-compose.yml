@@ -8,4 +8,4 @@ db:
     POSTGRES_USER: 'bank_user'
     POSTGRES_PASSWORD: 'bank_password'
   volumes:
-    - ./sql:/docker-entrypoint-initdb.d/
+    - ./sql/migrations:/docker-entrypoint-initdb.d/

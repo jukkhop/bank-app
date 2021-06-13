@@ -11,11 +11,13 @@ This project is a personal exercise in programming and for trying different appr
 ## Tools and libraries used
 
 Miscellaneous
+
 - AWS as cloud provider (API Gateway, CloudFront, Lambda, RDS, Route53, S3, VPC)
 - [Terraform](https://github.com/hashicorp/terraform) for infrastructure-as-code
 - [git-crypt](https://github.com/AGWA/git-crypt) for encryption
 
 Backend
+
 - F#, .NET Core, PostgreSQL
 - [FSharp.Json](https://github.com/vsapronov/FSharp.Json) as JSON library
 - [Npgsql](https://github.com/npgsql/npgsql) as Postgres connector library
@@ -24,6 +26,7 @@ Backend
 - [Foq](https://github.com/fsprojects/Foq) as mocking library
 
 Frontend
+
 - React, TypeScript, ESLint, Prettier
 - [RxJs](https://github.com/ReactiveX/rxjs) for reactive fetching and rendering (in combination with [React Hooks](https://reactjs.org/docs/hooks-overview.html))
 - [Bulma](https://github.com/jgthms/bulma) as CSS framework
@@ -41,9 +44,9 @@ Currently there is no option to run the actual API locally. In order to test the
 To run unit tests:
 
 - Install [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet/3.1) and [Docker](https://www.docker.com/get-started)
-- Change directory `cd backend`
+- Change directory `cd database`
 - Up the database `docker-compose up -d`
-- Change directory `cd tests`
+- Change directory `cd backend/tests`
 - Install deps `dotnet restore`
 - Run tests `dotnet test`
 
