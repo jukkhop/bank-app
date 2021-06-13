@@ -3,7 +3,7 @@ import { delay, map, switchMap } from 'rxjs/operators'
 
 import { sourceSubjects } from './sources'
 import { CreateTransferRequest, Methods } from '../types'
-import { mkEndpointUrl, observeFetch } from '../utils'
+import { mkBackendUrl, observeFetch } from '../utils'
 
 enum Endpoints {
   createTransfer = 'create-bank-transfer',
@@ -79,7 +79,7 @@ const action$: Observable<Action<unknown>> = merge(
 )
 
 action$.subscribe((action: Action<unknown>) => {
-  const url = mkEndpointUrl(action.endpoint)
+  const url = mkBackendUrl(action.endpoint)
   const init = {
     method: action.method,
     body: action.data ? JSON.stringify(action.data) : undefined,

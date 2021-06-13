@@ -7,18 +7,22 @@ import { takeWhile } from 'rxjs/operators'
 import CreateTransferForm from '../../components/CreateTransferBox/CreateTransferForm'
 import { useObservable } from '../../hooks'
 import { initials, sinks, sources } from '../../store'
-import { CreateTransferRequest } from '../../types'
+import { CreateTransferRequest, GetAccountsResponse } from '../../types'
 
-const initialAccounts$ = sources.getAccounts.pipe(takeWhile((x) => x.loading, true))
+const initialAccounts$ = sources.getAccounts.pipe(
+  takeWhile((x: GetAccountsResponse) => x.loading, true),
+)
 
 function CreateTransferFormContainer(): JSX.Element {
   const { errors: formErrors, handleSubmit, register } = useForm()
   const accountsData = useObservable(initialAccounts$, initials.getAccounts)
   const transferData = useObservable(sources.createTransfer, initials.createTransfer)
 
+  // prettier-ignore
   const { accounts = [], loading: accountsLoading = false, error: accountsError = false } =
     accountsData || {}
 
+  // prettier-ignore
   const { transfer, loading: transferLoading = false, error: transferError = false } =
     transferData || {}
 

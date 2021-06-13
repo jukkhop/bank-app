@@ -2,8 +2,8 @@ import { Observable, Observer, of } from 'rxjs'
 import { fromFetch } from 'rxjs/fetch'
 import { catchError, startWith, switchMap } from 'rxjs/operators'
 
-function observableFromFetch<T>(url: string, init?: RequestInit): Observable<T> {
-  return fromFetch(url, init).pipe(
+function observableFromFetch<T>(url: URL, init?: RequestInit): Observable<T> {
+  return fromFetch(url.toString(), init).pipe(
     switchMap((response: Response) => {
       if (response.ok) {
         return response.json()
@@ -21,7 +21,7 @@ function observableFromFetch<T>(url: string, init?: RequestInit): Observable<T> 
   ) as Observable<T>
 }
 
-function observeFetch<T>(url: string, init: RequestInit, observer: Observer<T>): void {
+function observeFetch<T>(url: URL, init: RequestInit, observer: Observer<T>): void {
   observableFromFetch<T>(url, init).subscribe(
     (value) => observer.next(value),
     (err) => observer.error(err),
